@@ -1869,3 +1869,39 @@ print(json_data)
 
 
 
+# 从`doc`格式转换为`txt`格式
+
+> 采用打开软件分析内容,然后,粘贴的方法
+
+```python
+def doc_to_txt(input_file_path: str, output_file_path: str) -> bool:
+    """
+    将 .doc 文件转换成 .txt 文件
+    :param input_file_path:
+    :param output_file_path:
+    :return: -> bool
+    """
+    try:
+        # 创建 Word 应用程序对象
+        word_app = win32.Dispatch("Word.Application")
+
+        # 打开 .doc 文件
+        doc = word_app.Documents.Open(input_file_path)
+
+        # 获取文本内容
+        file_content = doc.Content.Text
+
+        # 关闭 Word 应用程序
+        word_app.Quit()
+
+        # 将内容写入到 .txt 文件
+        with open(output_file_path, "a", encoding="utf-8") as txt_file:  # a 表示追加写入
+            txt_file.write(file_content)
+
+        return True
+    except Exception as e:
+        print(f"转换文件出错：{e}")
+        return False
+
+```
+

@@ -1373,6 +1373,86 @@ Selenium的应用场景包括：
 
 
 
+> 安装在`Scripts`的文件夹下面(这个文件夹被包含在我的path中)
+
+
+
+## 初始化一个浏览器的object
+
+* init
+
+```python
+from selenium.webdriver import Chrome
+
+web = Chrome()
+```
+
+
+
+## 点击对应的部分(使用`xpath`)
+
+```python
+web = Chrome()
+web.get('https://www.roxylib.com/')
+
+el = web.find_element(By.XPATH,'//*[@id="tag_cloud-3"]/nav/div/a[1]')
+
+el.click()
+```
+
+
+
+## 使用搜索框
+
+```python
+from selenium.webdriver import Chrome
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+
+web = Chrome()
+web.get('https://www.tasim.net/')
+
+search = web.find_element(By.NAME, 'q')
+
+search.send_keys('python', Keys.ENTER)
+```
+
+
+
+## 切换窗口
+
+```python
+web.switch_to.window(web.window_handles[-1])  # 切换到新打开的窗口
+titles = web.find_elements(By.CLASS_NAME, 'bili-video-card__info--tit')  # 获取所有的视频信息
+for x in titles:
+    # 打印x中title元素内容
+    print(x.text)
+```
+
+
+
+## 去掉子窗口
+
+```python
+web.close()
+web.switch_to.window(web.window_handles[-1])
+```
+
+
+
+## 使用无头浏览器
+
+```python
+from selenium.webdriver.chrome.options import Options  # 从options模块中调用Options类
+
+# 使用headless无界面浏览器模式
+chrome_options = Options()  # 实例化Option对象
+chrome_options.add_argument('--headless')  # 把Chrome浏览器设置为静默模式
+web = Chrome(options=chrome_options)  # 设置引擎为Chrome，在后台默默运行
+```
+
+
+
 
 
 # `IPManager`
@@ -2099,6 +2179,15 @@ if __name__ == '__main__':
     test = NovelCrawler('https://m.23wxx.com/xs/30316/4368683.html')
     print(test.get_passage_content(use_filter='break'))
 ```
+
+
+
+# 使用`session`解决需要登陆的情况
+
+> 1. 通过`登陆`获取`cookie`,这个`cookie`是后续的登陆需要的信息
+> 2. 使用`session`访问(不会丢失`cookie`)
+
+
 
 
 
