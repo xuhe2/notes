@@ -1945,3 +1945,113 @@ def doc_to_txt(input_file_path: str, output_file_path: str) -> bool:
 
 ```
 
+
+
+# 发送`EMAIL`
+
+* 使用python发送email
+
+```python
+# 使用QQ邮箱发送邮件,定时发送邮件
+import smtplib
+from email.message import EmailMessage
+
+
+class QQEmail:
+    def __init__(self, email, keyword):
+        self.email = email
+        self.msg = None  # 邮件对象
+        self.flag = True  # 邮箱是否登录成功
+
+        try:
+            smtp_server = 'smtp.qq.com'
+            smtp_port = 465
+            self.smtp = smtplib.SMTP_SSL(smtp_server, smtp_port)  # 创建SMTP对象
+
+            # 登录邮箱
+            self.smtp.login(email, keyword)
+        except Exception as e:
+            self.flag = False  # 邮箱登录失败
+
+    # 设置消息
+    def set_message(self, to_email: str, subject: str, content: str):
+        self.msg = EmailMessage()  # 创建邮件对象
+        self.msg['Subject'] = subject  # 设置邮件主题
+        self.msg['From'] = self.email  # 设置发送者
+        self.msg['To'] = to_email  # 设置接收者
+        self.msg.set_content(content)  # 设置邮件正文
+
+    # 添加附件
+    def add_attachment(self, path):
+        # 获取附件格式
+        # 如果是jpg文件，使用专门的函数进行添加
+        if path.endswith('.jpg'):
+            maintype = 'image'
+            subtype = 'jpg'
+        # 如果是png文件，使用专门的函数进行添加
+        elif path.endswith('.png'):
+            maintype = 'image'
+            subtype = 'png'
+        # 如果是zip文件，使用专门的函数进行添加
+        elif path.endswith('.zip'):
+            maintype = 'application'
+            subtype = 'zip'
+        # 如果是PDF文件，使用专门的函数进行添加
+        elif path.endswith('.pdf'):
+            maintype = 'application'
+            subtype = 'pdf'
+        # 其他文件，使用通用类型进行添加
+        else:
+            maintype = 'application'
+            subtype = 'octet-stream'
+
+        try:
+            with open(path, 'rb') as f:
+                file = f.read()
+                self.msg.add_attachment(file, maintype=maintype, subtype=subtype, filename=path)
+        except Exception as e:
+            print('add attachment failed')
+
+    def send(self):
+        if not self.flag:
+            print('login failed')
+            return
+
+        if not self.msg:
+            print('message is None')
+            return
+
+        try:
+            self.smtp.send_message(self.msg)  # 发送邮件
+            print('send success')
+        except Exception as e:
+            print('send failed')
+
+
+def input_content():
+    content = ''
+    while True:
+        line = input('> ')
+        if line.strip() == '':  # 输入.表示结束
+            break
+        content += line + '\n'
+    return content
+
+
+if __name__ == '__main__':
+    email = 'XXX'
+    keyword = 'XXX'  # 输入QQ邮箱授权码
+
+    qq_email = QQEmail(email, keyword)
+
+    to_email = 'XXX'
+    # 主题是消息传递
+    subject = 'XXX'
+    # 输入邮件正文
+    content = input_content()
+
+    qq_email.set_message(to_email, subject, content)
+    # qq_email.add_attachment('./test.txt')
+    qq_email.send()
+```
+
