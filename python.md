@@ -2055,3 +2055,31 @@ if __name__ == '__main__':
     qq_email.send()
 ```
 
+
+
+
+
+# 调用`API`
+
+> 在实现`API`的调用的时候,使用python的`requests`模块就可以
+
+```python
+import requests
+# GET请求发送的参数一定要是字典的形式，可以发送多个参数。
+# 发送格式：{'key1':value1', 'key2':'value2', 'key3', 'value3'}
+# 样例不能运行
+url ='http://www.xxxxx.com'
+params = {'user':'lixue','password':111112333}
+requests.get(url,data = parms)
+```
+
+​	
+
+* 有些时候需要使用`json`格式
+
+```python
+data = {'user':'lixue','password':12233}
+data_json = json.dumps(params)
+requests.post(url,headers = headers,data = data_json)
+```
+
