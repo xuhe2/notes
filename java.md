@@ -33,6 +33,240 @@ int[] ns = new int[5];
 
 > the prefix is `int[]`
 
+
+
+## array copy
+
+* 我们不能直接使用赋值，这样指向的是相同的内存空间，需要自己新开辟一部分的`Array`空间
+
+在Java中，你可以使用不同的方法来复制一个新的数组，具体取决于你想要实现的功能和使用场景。下面介绍几种常见的方法。
+
+### 1. 使用循环遍历复制数组：
+
+这是一种最基本的方法，通过遍历源数组的每个元素，逐个复制到新的数组中。
+
+```java
+public class ArrayCopyExample {
+    public static void main(String[] args) {
+        int[] sourceArray = {1, 2, 3, 4, 5};
+        int[] destinationArray = new int[sourceArray.length];
+
+        for (int i = 0; i < sourceArray.length; i++) {
+            destinationArray[i] = sourceArray[i];
+        }
+
+        // 现在 destinationArray 是 sourceArray 的副本
+    }
+}
+```
+
+### 2. 使用`System.arraycopy`方法：
+
+Java提供了`System.arraycopy`方法来复制数组的一部分或整个数组。
+
+```java
+public class ArrayCopyExample {
+    public static void main(String[] args) {
+        int[] sourceArray = {1, 2, 3, 4, 5};
+        int[] destinationArray = new int[sourceArray.length];
+
+        System.arraycopy(sourceArray, 0, destinationArray, 0, sourceArray.length);
+
+        // 现在 destinationArray 是 sourceArray 的副本
+    }
+}
+```
+
+### 3. 使用`Arrays.copyOf`方法：
+
+`Arrays`类提供了一个`copyOf`方法，它可以在一行代码中完成数组复制操作。
+
+```java
+import java.util.Arrays;
+
+public class ArrayCopyExample {
+    public static void main(String[] args) {
+        int[] sourceArray = {1, 2, 3, 4, 5};
+        int[] destinationArray = Arrays.copyOf(sourceArray, sourceArray.length);
+
+        // 现在 destinationArray 是 sourceArray 的副本
+    }
+}
+```
+
+### 4. 使用`clone`方法：
+
+每个数组对象都有一个`clone`方法，可以用来创建一个数组的副本。
+
+```java
+public class ArrayCopyExample {
+    public static void main(String[] args) {
+        int[] sourceArray = {1, 2, 3, 4, 5};
+        int[] destinationArray = sourceArray.clone();
+
+        // 现在 destinationArray 是 sourceArray 的副本
+    }
+}
+```
+
+请注意，上述方法中创建的新数组都是浅复制，即数组元素本身并没有被复制，只是数组的引用被复制了。如果数组中包含对象元素，那么原数组和副本数组会引用相同的对象。如果需要深度复制（复制数组元素本身），就需要自行编写逻辑来实现。
+
+根据你的需求，选择适合的方法来复制数组。
+
+
+
+## array reverse
+
+在Java中，你可以使用不同的方法来实现数组的反转。下面介绍两种常见的方法。
+
+### 1. 使用循环遍历进行反转：
+
+这是一种基本的方法，通过交换数组元素的位置来实现反转。
+
+```java
+public class ArrayReverseExample {
+    public static void main(String[] args) {
+        int[] array = {1, 2, 3, 4, 5};
+
+        int left = 0;
+        int right = array.length - 1;
+
+        while (left < right) {
+            // 交换左右两侧的元素
+            int temp = array[left];
+            array[left] = array[right];
+            array[right] = temp;
+
+            // 移动指针
+            left++;
+            right--;
+        }
+
+        // 现在 array 已经被反转
+    }
+}
+```
+
+### 2. 使用`Collections.reverse`方法（适用于包装类数组）：
+
+如果你处理的是包装类数组（例如 `Integer[]`），你可以使用`java.util.Collections`类提供的`reverse`方法。
+
+```java
+import java.util.Arrays;
+import java.util.Collections;
+
+public class ArrayReverseExample {
+    public static void main(String[] args) {
+        Integer[] array = {1, 2, 3, 4, 5};
+
+        // 将数组转换为 List，并使用 Collections.reverse 进行反转
+        Collections.reverse(Arrays.asList(array));
+
+        // 现在 array 已经被反转
+    }
+}
+```
+
+请注意，`Collections.reverse`方法适用于包装类数组（例如 `Integer[]`），对于基本数据类型数组（例如 `int[]`），不能直接使用该方法。
+
+选择适合你情况的方法来反转数组。
+
+
+
+## 数组扩容
+
+* 复制原来的数组然后在最后追加
+
+* 使用`ArrayList`动态数组
+
+```java
+import java.util.ArrayList;
+
+public class ArrayListExample {
+    public static void main(String[] args) {
+        // 创建一个空的 ArrayList
+        ArrayList<Integer> numbers = new ArrayList<>();
+
+        // 添加元素
+        numbers.add(10);
+        numbers.add(20);
+        numbers.add(30);
+
+        // 访问元素
+        int firstNumber = numbers.get(0);
+        System.out.println("First number: " + firstNumber);
+
+        // 修改元素
+        numbers.set(1, 25);
+
+        // 删除元素
+        numbers.remove(0);
+
+        // 遍历元素
+        for (int num : numbers) {
+            System.out.println(num);
+        }
+    }
+}
+```
+
+
+
+## 多维数组
+
+
+
+Java中的二维数组实际上是数组的数组，你可以将其想象为一个表格或者矩阵。二维数组在表示矩阵、游戏棋盘等情况下非常有用。下面是如何定义、初始化和使用二维数组的示例：
+
+```java
+public class TwoDimensionalArrayExample {
+    public static void main(String[] args) {
+        // 定义一个 3x3 的二维数组
+        int[][] matrix = new int[3][3];
+
+        // 初始化数组元素
+        matrix[0][0] = 1;
+        matrix[0][1] = 2;
+        matrix[0][2] = 3;
+        matrix[1][0] = 4;
+        matrix[1][1] = 5;
+        matrix[1][2] = 6;
+        matrix[2][0] = 7;
+        matrix[2][1] = 8;
+        matrix[2][2] = 9;
+
+        // 访问数组元素
+        int value = matrix[1][2];  // 获取第二行第三列的元素，值为6
+
+        // 打印数组内容
+        for (int row = 0; row < matrix.length; row++) {
+            for (int col = 0; col < matrix[row].length; col++) {
+                System.out.print(matrix[row][col] + " ");
+            }
+            System.out.println();
+        }
+    }
+}
+```
+
+在这个示例中，我们首先定义了一个3x3的整数二维数组`matrix`。然后，我们分别初始化了每个数组元素的值，并通过嵌套的循环遍历和打印了整个二维数组的内容。
+
+你还可以使用更简洁的语法来定义和初始化二维数组：
+
+```java
+int[][] matrix = {
+    {1, 2, 3},
+    {4, 5, 6},
+    {7, 8, 9}
+};
+```
+
+这种方式可以更清晰地表示二维数组的结构。
+
+二维数组的操作和一维数组类似，你可以使用索引来访问和修改元素。需要注意的是，二维数组的行数和列数可以是不同的，但在每一行中，列数必须相同。
+
+
+
 # input and output
 
 ## input
@@ -199,6 +433,12 @@ class Student extends Person {
 }
 ```
 
+
+
+* 注意,当一个函数是当前类没有的时候,会向上一级父类去找.
+
+
+
 ### 使用`super()`调用父类的构造函数
 
 > 在 Java 中，任何`class`的构造方法，第一行语句必须是调用父类的构造方法。如果没有明确地调用父类的构造方法，编译器会帮我们自动加一句`super();`
@@ -219,6 +459,7 @@ class Student extends Person {
 ```
 
 - 子类不会继承父类的构造函数
+- 必须放在子类构造函数的开头
 
 ## 阻止继承
 
@@ -411,6 +652,8 @@ public interface Person {
 
 # 包
 
+* 在`src`文件夹那创建
+
 > 我们使用`package`来解决名字冲突。
 >
 > Java 定义了一种名字空间，称之为包：`package`。一个类总是属于某个包，类名（比如`Person`）只是一个简写，真正的完整类名是`包名.类名`。
@@ -443,6 +686,14 @@ import mr.jun.*;
 - 注意,我们一般不使用这种方式
 
 > 还有一种 import static 的语法，它可以导入可以导入一个类的静态字段和静态方法.
+
+
+
+## 命名规范
+
+> `com.公司名.项目名.模块名`
+
+
 
 # 作用域
 
