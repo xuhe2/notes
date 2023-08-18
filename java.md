@@ -650,6 +650,21 @@ public interface Person {
 }
 ```
 
+
+
+# `main `  function
+
+> 主函数的实现
+>
+> * 主函数的调用来自JAVA虚拟机
+> * 主函数需要是`public`,因为是来自外部的访问
+> * 主函数需要是`static`,因为需要不创建这个实例
+> * 可以接受外来的一些参数
+
+
+
+
+
 # 包
 
 * 在`src`文件夹那创建
@@ -829,3 +844,69 @@ jar 包实际上就是一个 zip 格式的压缩文件，而 jar 包相当于目
 
 java -cp ./hello.jar abc.xyz.Hello
 这样 JVM 会自动在 hello.jar 文件里去搜索某个类。
+
+
+
+# `null pointer`BUG
+
+Java中容易造成空指针问题的原因主要是因为在Java中，引用类型的变量默认可以指向`null`，这意味着它们未指向任何有效的对象实例。当试图访问一个为`null`的对象引用上的成员变量、调用方法或进行其他操作时，就会触发空指针异常（`NullPointerException`）。以下是一些常见导致空指针问题的情况：
+
+1. **未初始化的引用：** 如果你声明了一个引用变量，但在使用之前没有将其初始化为一个对象，那么它的默认值为`null`。在尝试访问这个引用上的任何成员时，都会触发空指针异常。
+
+    ```java
+    String str;  // 未初始化的引用，默认为 null
+    int length = str.length();  // 触发空指针异常
+    ```
+
+2. **方法返回值为`null`：** 如果你调用一个方法，它返回了`null`，然后你尝试在该返回值上调用方法，也会触发空指针异常。
+
+    ```java
+    String str = someMethod();  // 假设 someMethod 返回 null
+    int length = str.length();  // 触发空指针异常
+    ```
+
+3. **集合和数组元素为`null`：** 在集合类（如`ArrayList`、`HashMap`等）或数组中，元素可以为`null`。如果你尝试访问或操作一个为`null`的元素，就会触发空指针异常。
+
+    ```java
+    List<String> list = new ArrayList<>();
+    list.add(null);
+    int length = list.get(0).length();  // 触发空指针异常
+    ```
+
+4. **对象属性为`null`：** 如果一个对象的属性（成员变量）为`null`，而你试图访问该属性，同样会触发空指针异常。
+
+    ```java
+    class Person {
+        String name;
+    }
+    
+    Person person = new Person();
+    int length = person.name.length();  // 触发空指针异常
+    ```
+
+为了避免空指针异常，你可以采取以下预防措施：
+
+- 始终确保在使用对象引用之前进行初始化，确保它不是`null`。
+- 在调用可能返回`null`的方法时，先检查返回值是否为`null`。
+- 在访问集合、数组和对象属性之前，先检查是否为`null`。
+- 使用条件语句或空值合并操作符（Java 8及更高版本）来处理可能为`null`的情况。
+
+虽然Java中容易出现空指针问题，但遵循良好的编程实践和对潜在问题的警惕性可以帮助你避免这些问题。
+
+
+
+# JVM
+
+* 调用`main`方法的就是虚拟机
+
+
+
+## 垃圾回收机制
+
+* 注意,垃圾回收机制可以使用`GC`触发
+* 不会阻塞进程
+
+```java
+System.gc() //
+```
+
