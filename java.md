@@ -895,6 +895,189 @@ Java中容易造成空指针问题的原因主要是因为在Java中，引用类
 
 
 
+# 异常处理机制
+
+
+
+从继承关系可知：`Throwable`是异常体系的根，它继承自`Object`。`Throwable`有两个体系：`Error`和`Exception`，`Error`表示严重的错误，程序对此一般无能为力，例如：
+
+- `OutOfMemoryError`：内存耗尽
+- `NoClassDefFoundError`：无法加载某个Class
+- `StackOverflowError`：栈溢出
+
+而`Exception`则是运行时的错误，它可以被捕获并处理。
+
+某些异常是应用程序逻辑处理的一部分，应该捕获并处理。例如：
+
+- `NumberFormatException`：数值类型的格式错误
+- `FileNotFoundException`：未找到文件
+- `SocketException`：读取网络失败
+
+还有一些异常是程序逻辑编写不对造成的，应该修复程序本身。例如：
+
+- `NullPointerException`：对某个`null`的对象调用方法或字段
+- `IndexOutOfBoundsException`：数组索引越界
+
+`Exception`又分为两大类：
+
+1. `RuntimeException`以及它的子类；
+2. 非`RuntimeException`（包括`IOException`、`ReflectiveOperationException`等等）
+
+
+
+```
+public byte[] getBytes(String charsetName) throws UnsupportedEncodingException {
+    ...
+}
+```
+
+在方法定义的时候，使用`throws Xxx`表示该方法可能抛出的异常类型。调用方在调用的时候，必须强制捕获这些异常，否则编译器会报错。
+
+在`toGBK()`方法中，因为调用了`String.getBytes(String)`方法，就必须捕获`UnsupportedEncodingException`。我们也可以不捕获它，而是在方法定义处用throws表示`toGBK()`方法可能会抛出`UnsupportedEncodingException`，就可以让`toGBK()`方法通过编译器检查：
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        byte[] bs = toGBK("中文");
+        System.out.println(Arrays.toString(bs));
+    }
+
+    static byte[] toGBK(String s) throws UnsupportedEncodingException {
+        return s.getBytes("GBK");
+    }
+}
+```
+
+
+
+## 抛出异常
+
+* 使用和`CPP`一样的方式,用`throw`语句抛出
+
+```java
+void process2(String s) {
+    if (s==null) {
+        throw new NullPointerException();
+    }
+}
+```
+
+
+
+### 处理异常之后再抛出异常
+
+* 当你处理了之前捕获的异常然后再抛出一个异常的时候,之前的那个异常的信息会丢失
+* 为了防止之前异常来源丢失
+
+```java
+		catch (NullPointerException e) {
+            throw new IllegalArgumentException(e);
+        }
+```
+
+> 这样写可以防止之前的异常信息丢失.
+>
+> * 保留一开始的情况!
+
+
+
+
+
+## 子类和父类的异常类
+
+存在多个`catch`的时候，`catch`的顺序非常重要：子类必须写在前面。例如：
+
+```
+public static void main(String[] args) {
+    try {
+        process1();
+        process2();
+        process3();
+    } catch (IOException e) {
+        System.out.println("IO error");
+    } catch (UnsupportedEncodingException e) { // 永远捕获不到
+        System.out.println("Bad encoding");
+    }
+}
+```
+
+对于上面的代码，`UnsupportedEncodingException`异常是永远捕获不到的，因为它是`IOException`的子类。当抛出`UnsupportedEncodingException`异常时，会被`catch (IOException e) { ... }`捕获并执行。
+
+
+
+## `finally`
+
+* 使用`finally`可以使得最后一定有被处理
+* 可以存在不`catch`,直接`finally`的情况.
+
+```java
+public static void main(String[] args) {
+    try {
+        process1();
+        process2();
+        process3();
+    } catch (UnsupportedEncodingException e) {
+        System.out.println("Bad encoding");
+    } catch (IOException e) {
+        System.out.println("IO error");
+    } finally {
+        System.out.println("END");
+    }
+}
+```
+
+注意`finally`有几个特点：
+
+1. `finally`语句不是必须的，可写可不写；
+2. `finally`总是最后执行。
+
+
+
+## 当处理的不同的异常类的处理方式一样的时候
+
+因为处理`IOException`和`NumberFormatException`的代码是相同的，所以我们可以把它两用`|`合并到一起：
+
+```java
+public static void main(String[] args) {
+    try {
+        process1();
+        process2();
+        process3();
+    } catch (IOException | NumberFormatException e) { // IOException或NumberFormatException
+        System.out.println("Bad input");
+    } catch (Exception e) {
+        System.out.println("Unknown error");
+    }
+}
+```
+
+
+
+## 显示调用的堆栈
+
+* 感觉`IDE`的报错提醒也是一样的.
+
+```java
+		try {
+            process1();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+```
+
+通过`printStackTrace()`可以打印出方法的调用栈，类似：
+
+```java
+java.lang.NumberFormatException: null
+    at java.base/java.lang.Integer.parseInt(Integer.java:614)
+    at java.base/java.lang.Integer.parseInt(Integer.java:770)
+    at Main.process2(Main.java:16)
+    at Main.process1(Main.java:12)
+    at Main.main(Main.java:5)
+```
+
+
+
 # JVM
 
 * 调用`main`方法的就是虚拟机
