@@ -895,6 +895,105 @@ Java中容易造成空指针问题的原因主要是因为在Java中，引用类
 
 
 
+## 处理`NullPointerException`
+
+* 注意,这是一种代码编写时候的问题,所以,我们需要修改代码,而不是使用`catch`来隐藏问题.
+
+成员变量在定义时初始化：
+
+```
+public class Person {
+    private String name = "";
+}
+```
+
+使用空字符串`""`而不是默认的`null`可避免很多`NullPointerException`，编写业务逻辑时，用空字符串`""`表示未填写比`null`安全得多。
+
+
+
+返回空字符串`""`、空数组而不是`null`：
+
+```
+public String[] readLinesFromFile(String file) {
+    if (getFileSize(file) == 0) {
+        // 返回空数组而不是null:
+        return new String[0];
+    }
+    ...
+}
+```
+
+这样可以使得调用方无需检查结果是否为`null`。
+
+如果调用方一定要根据`null`判断，比如返回`null`表示文件不存在，那么考虑返回`Optional<T>`：
+
+```
+public Optional<String> readFromFile(String file) {
+    if (!fileExist(file)) {
+        return Optional.empty();
+    }
+    ...
+}
+```
+
+这样调用方必须通过`Optional.isPresent()`判断是否有结果。
+
+
+
+## `Optional`类
+
+* 用于解决空指针的问题.
+
+`Optional`是Java 8引入的一个类，旨在解决空指针异常问题，并提供更好的处理可能为`null`的情况。它是一种包装类，用于表示一个可能存在 可能为空的值。通过使用`Optional`，你可以更明确地处理可能为空的对象，避免不必要的空指针异常。
+
+以下是一些关于`Optional`的重要信息：
+
+1. **创建`Optional`实例：** 你可以使用`Optional`类的静态方法来创建一个`Optional`实例，用于包装一个可能为空的值。例如：
+
+   ```java
+   Optional<String> optionalValue = Optional.ofNullable(someValue);
+   ```
+
+   这里的`someValue`可以是任何引用类型，包括可能为`null`的对象。
+
+2. **检查是否存在值：** 使用`isPresent()`方法来检查`Optional`实例是否包含一个非`null`的值。
+
+   ```java
+   if (optionalValue.isPresent()) {
+       // 执行操作
+   }
+   ```
+
+3. **获取值：** 使用`get()`方法来获取`Optional`实例中的值。但要注意，如果值为`null`，调用`get()`方法将引发`NoSuchElementException`。
+
+   ```java
+   String value = optionalValue.get();
+   ```
+
+4. **避免空指针异常：** 使用`orElse()`方法来获取`Optional`中的值，如果值为`null`，则返回指定的默认值。
+
+   ```java
+   String value = optionalValue.orElse("default");
+   ```
+
+5. **处理值不存在的情况：** 使用`ifPresent()`方法结合Lambda表达式来处理值存在的情况。
+
+   ```java
+   optionalValue.ifPresent(val -> System.out.println("Value: " + val));
+   ```
+
+6. **链式处理：** `Optional`支持链式操作，你可以使用`map()`、`flatMap()`等方法对值进行处理，而无需担心空指针异常。
+
+   ```java
+   Optional<String> transformed = optionalValue.map(val -> val.toUpperCase());
+   ```
+
+7. **自定义处理：** 你可以使用`orElseGet()`、`orElseThrow()`等方法来进行更复杂的处理，根据具体情况返回默认值或抛出异常。
+
+`Optional`并不是所有情况下都是必需的，但在你需要处理可能为空的值，并希望明确处理为空情况时，它是一个很有用的工具。要注意，过度使用`Optional`可能会使代码变得复杂，因此需要根据具体情况谨慎使用。
+
+
+
 # 异常处理机制
 
 
@@ -1075,6 +1174,306 @@ java.lang.NumberFormatException: null
     at Main.process1(Main.java:12)
     at Main.main(Main.java:5)
 ```
+
+
+
+## `assertion`断言使用
+
+* 是一个`关键字`,可以通过使用这个关键字,实现调试.
+
+
+
+使用`assert`语句时，还可以添加一个可选的断言消息：
+
+```java
+assert x >= 0 : "x must >= 0";
+```
+
+
+
+### `assertion`断言不起作用
+
+这是因为JVM默认关闭断言指令，即遇到`assert`语句就自动忽略了，不执行。
+
+要执行`assert`语句，必须给Java虚拟机传递`-enableassertions`（可简写为`-ea`）参数启用断言。所以，上述程序必须在命令行下运行才有效果：
+
+```
+$ java -ea Main.java
+Exception in thread "main" java.lang.AssertionError
+	at Main.main(Main.java:5)
+```
+
+还可以有选择地对特定地类启用断言，命令行参数是：`-ea:com.itranswarp.sample.Main`，表示只对`com.itranswarp.sample.Main`这个类启用断言。
+
+或者对特定地包启用断言，命令行参数是：`-ea:com.itranswarp.sample...`（注意结尾有3个`.`），表示对`com.itranswarp.sample`这个包启动断言。
+
+实际开发中，很少使用断言。更好的方法是编写单元测试，后续我们会讲解`JUnit`的使用。
+
+
+
+## `logging`日志
+
+* 你可以通过向日志打印部分数据实现检查部分数据的状态.
+
+```java
+import java.util.logging.Level;
+import java.util.logging.Logger;
+public class Hello {
+    public static void main(String[] args) {
+        Logger logger = Logger.getGlobal();
+        logger.info("start process...");
+        logger.warning("memory is running out...");
+        logger.fine("ignored.");
+        logger.severe("process will be terminated...");
+    }
+}
+```
+
+> 需要从`java.util.logging`中导入数据.
+
+
+
+# 反射
+
+反射（Reflection）是Java语言的一个强大特性，允许程序在运行时检查和操作类、对象、方法和字段等的信息。通过反射，你可以动态地获取类的信息，创建对象，调用方法，访问字段，以及执行其他与类结构相关的操作，而无需在编译时明确地知道类的结构。
+
+以下是一些关于Java反射的重要信息：
+
+1. **获取类对象：** 使用`Class`类可以获取一个类的`Class`对象。`Class`对象包含了类的各种信息，如类名、包名、父类、接口、构造函数、方法、字段等。
+
+   ```java
+   Class<?> classObject = ClassName.class; // 或者使用 Class.forName("ClassName")
+   ```
+
+2. **实例化对象：** 使用反射可以通过`Class`对象创建类的实例。
+
+   ```java
+   Class<?> classObject = ClassName.class;
+   Object instance = classObject.newInstance();
+   ```
+
+3. **获取和调用方法：** 可以使用`getMethod()`方法获取类中的方法，并使用`invoke()`方法调用方法。
+
+   ```java
+   Method method = classObject.getMethod("methodName", parameterTypes);
+   Object result = method.invoke(instance, arguments);
+   ```
+
+4. **获取和设置字段：** 可以使用`getField()`方法获取类中的字段，并使用`get()`和`set()`方法访问和修改字段的值。
+
+   ```java
+   Field field = classObject.getField("fieldName");
+   Object value = field.get(instance);
+   field.set(instance, newValue);
+   ```
+
+5. **访问私有成员：** 使用反射可以访问类中的私有方法和字段，但需要设置相关的访问权限。
+
+   ```java
+   Method privateMethod = classObject.getDeclaredMethod("privateMethodName", parameterTypes);
+   privateMethod.setAccessible(true);
+   Object result = privateMethod.invoke(instance, arguments);
+   ```
+
+6. **操作数组、泛型和注解：** 反射还可以用于处理数组、泛型、枚举、注解等。
+
+7. **动态代理：** 反射可以实现动态代理，允许你创建一个代理类来代替实际对象，以实现一些通用的行为。
+
+尽管反射功能非常强大且灵活，但也需要小心使用，因为它会在一定程度上降低性能，使代码更加复杂，并且可能绕过编译时的类型检查。在使用反射时，务必了解相关的风险和最佳实践，以确保代码的可维护性和性能。
+
+
+
+## `Class`类
+
+每加载一种`class`，JVM就为其创建一个`Class`类型的实例，并关联起来。注意：这里的`Class`类型是一个名叫`Class`的`class`。它长这样：
+
+```
+public final class Class {
+    private Class() {}
+}
+```
+
+以`String`类为例，当JVM加载`String`类时，它首先读取`String.class`文件到内存，然后，为`String`类创建一个`Class`实例并关联起来：
+
+```java
+Class cls = new Class(String);
+```
+
+由于JVM为每个加载的`class`创建了对应的`Class`实例，并在实例中保存了该`class`的所有信息，包括类名、包名、父类、实现的接口、所有方法、字段等，因此，如果获取了某个`Class`实例，我们就可以通过这个`Class`实例获取到该实例对应的`class`的所有信息。
+
+* 只能由`JVM`创建
+
+
+
+如何获取一个`class`的`Class`实例？有三个方法：
+
+方法一：直接通过一个`class`的静态变量`class`获取：
+
+```
+Class cls = String.class;
+```
+
+方法二：如果我们有一个实例变量，可以通过该实例变量提供的`getClass()`方法获取：
+
+```
+String s = "Hello";
+Class cls = s.getClass();
+```
+
+方法三：如果知道一个`class`的完整类名，可以通过静态方法`Class.forName()`获取：
+
+```java
+Class cls = Class.forName("java.lang.String");
+```
+
+
+
+### 访问字段
+
+我们先看看如何通过`Class`实例获取字段信息。`Class`类提供了以下几个方法来获取字段：
+
+- Field getField(name)：根据字段名获取某个public的field（包括父类）
+- Field getDeclaredField(name)：根据字段名获取当前类的某个field（不包括父类）
+- Field[] getFields()：获取所有public的field（包括父类）
+- Field[] getDeclaredFields()：获取当前类的所有field（不包括父类）
+
+
+
+
+
+
+
+## `instanceof`
+
+* 用`instanceof`不但匹配指定类型，还匹配指定类型的子类
+
+
+
+# 集合(collection)
+
+> 是由若干个元素构成的整体.
+
+
+
+## `LIST`
+
+> 我们常用`ArrayList`
+>
+> - 在末尾添加一个元素：`boolean add(E e)`
+> - 在指定索引添加一个元素：`boolean add(int index, E e)`
+> - 删除指定索引的元素：`E remove(int index)`
+> - 删除某个元素：`boolean remove(Object e)`
+> - 获取指定索引的元素：`E get(int index)`
+> - 获取链表大小（包含元素的个数）：`int size()`
+
+* 注意,不能使用`List[index]`的方式访问那个下标的元素,只能使用`get`方法
+
+
+
+### 创建`LIST`
+
+> 可以使用`of`方法初始化的时候直接创建
+>
+> ```java
+> List<Integer> list = List.of(1, 2, 5);
+> ```
+
+
+
+### 遍历`LIST`
+
+> 1. 和数组类型，我们要遍历一个`List`，完全可以用`for`循环根据索引配合`get(int)`方法遍历
+
+
+
+> 2. 但这种方式并不推荐，一是代码复杂，二是因为`get(int)`方法只有`ArrayList`的实现是高效的，换成`LinkedList`后，索引越大，访问速度越慢。
+>
+> 所以我们要始终坚持使用迭代器`Iterator`来访问`List`。`Iterator`本身也是一个对象，但它是由`List`的实例调用`iterator()`方法的时候创建的。`Iterator`对象知道如何遍历一个`List`，并且不同的`List`类型，返回的`Iterator`对象实现也是不同的，但总是具有最高的访问效率。
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        List<String> list = List.of("apple", "pear", "banana");
+        for (Iterator<String> it = list.iterator(); it.hasNext(); ) {
+            String s = it.next();
+            System.out.println(s);
+        }
+    }
+}
+```
+
+
+
+> 3 . 使用`for each`的方式
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        List<String> list = List.of("apple", "pear", "banana");
+        for (String s : list) {
+            System.out.println(s);
+        }
+    }
+}
+```
+
+
+
+### `List`转换为`Array`
+
+> 把`List`变为`Array`有三种方法，第一种是调用`toArray()`方法直接返回一个`Object[]`数组
+
+* 注意,这种方法会丢失原来的属性
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        List<String> list = List.of("apple", "pear", "banana");
+        Object[] array = list.toArray();
+        for (Object s : array) {
+            System.out.println(s);
+        }
+    }
+}
+```
+
+> 第二种方式是给`toArray(T[])`传入一个类型相同的`Array`，`List`内部自动把元素复制到传入的`Array`中
+
+* 注意,你需要它变成的格式`T`不需要和之前定义`List`的时候的格式一样
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        List<Integer> list = List.of(12, 34, 56);
+        Integer[] array = list.toArray(new Integer[3]);
+        for (Integer n : array) {
+            System.out.println(n);
+        }
+    }
+}
+```
+
+
+
+* tips
+
+> 但是，如果我们传入类型不匹配的数组，例如，`String[]`类型的数组，由于`List`的元素是`Integer`，所以无法放入`String`数组，这个方法会抛出`ArrayStoreException`
+
+> 如果传入的数组不够大，那么`List`内部会创建一个新的刚好够大的数组，填充后返回；如果传入的数组比`List`元素还要多，那么填充完元素后，剩下的数组元素一律填充`null`
+
+
+
+### `Array`转换为`List`
+
+把`Array`变为`List`就简单多了，通过`List.of(T...)`方法最简单：
+
+```java
+Integer[] array = { 1, 2, 3 };
+List<Integer> list = List.of(array);
+```
+
+* 注意,返回的值是只读的
+* 对只读`List`调用`add()`、`remove()`方法会抛出`UnsupportedOperationException`
 
 
 
