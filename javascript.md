@@ -443,3 +443,41 @@ searchInput.addEventListener("blur", function () {
 });
 ```
 
+
+
+
+
+# 渲染`markdown`文本(`GitHub`风格)
+
+* 需要使用`marked,js`第三方库,使用`npm install XXX`安装,也可以使用直接导入
+
+> 导入模块
+
+```
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+```
+
+
+
+```javascript
+function renderMarkdownFile(filePath, targetElementId) {
+    const targetElement = document.getElementById(targetElementId);
+    if (!targetElement) {
+        console.error("Target element not found.");
+        return;
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", filePath, true);
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const markdownContent = xhr.responseText;
+            targetElement.innerHTML = marked.parse(markdownContent);
+        }
+    };
+
+    xhr.send();
+}
+```
+

@@ -87,6 +87,14 @@ HTML 图像是通过 <img> 标签进行定义的。
 <body background="/i/eg_background.jpg">
 ```
 
+* 现在使用`CSS`样式设置
+
+```html
+<body style='background-image: url("./web_background.jpg")'>
+```
+
+
+
 
 
 ## 把图片放在文字中
