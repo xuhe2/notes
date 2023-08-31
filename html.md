@@ -12,6 +12,16 @@ HTML 标题（Heading）是通过 <h1> - <h6> 等标签进行定义的。
 
 
 
+# 标签`label`
+
+```html
+<label for="place">选择你的地区</label>
+```
+
+* 使用`for`可以设置这个标签对应的是哪个控件,当你点击这个`for`的时候,你会跳转到这个对应的控件.
+
+
+
 # HTML 段落
 
 HTML 段落是通过 <p> 标签进行定义的。
@@ -161,7 +171,7 @@ hr 元素可用于分隔内容。
 
 ## 实例
 
-```
+```html
 <!-- This is a comment -->
 ```
 
@@ -580,7 +590,7 @@ with a metropolitan area of over 13 million inhabitants.
 
 
 
-# HTML内联框架
+# HTML内联框架`iframe`
 
 > 使用`iframe`实现,可以从一个小部分访问别的界面
 
@@ -593,6 +603,13 @@ with a metropolitan area of over 13 million inhabitants.
 ```html
 <iframe src="demo_iframe.htm" width="200" height="200"></iframe>
 ```
+
+
+
+## 使用`target`跳转
+
+1. 使用`<a>`的
+2. 使用`<form>`表单的
 
 
 
@@ -790,3 +807,132 @@ Copyright W3School.com.cn
 
 * 访问官方的字符实体表来查询
 * 一些特殊的`符号`和`表情(emoj)`也可以使用这样表示
+
+
+
+
+
+# 表单(`form`)
+
+* 表单的本质是`为了搜集信息`
+* 所有的元素需要带上`name`属性,不然不能收集.
+* 对于`单选框和多选框`,需要设置`value`属性
+
+
+
+## 使用`action`
+
+```html
+	<form action="http://www.baidu.com/s?" method="get">
+        <input type="text" name="wd" placeholder="请输入搜索内容">
+    </form>
+```
+
+
+
+## 隐藏域
+
+> `input`使用`type=hidden`,虽然不可见,但是在收集信息的时候,依旧可以收集到.
+
+
+
+## 提交和重置
+
+1. 放一个`button`
+
+> 默认是`type=submit`
+
+
+
+
+
+2. 使用`input`,并且设置为`type=submit`
+
+```html
+        <input type="submit" value="搜索">
+        <!-- 提交按钮 -->
+        <input type="reset" value="重置">
+        <!-- 重置按钮 -->
+```
+
+
+
+## 禁用
+
+> 使用`disabled`属性
+
+
+
+## `fieldset`和`legend`
+
+> 会框出一个部分
+
+```html
+    <fieldset>
+        <legend>用户注册</legend>
+    </fieldset>
+```
+
+
+
+
+
+# 单选按钮/单选框
+
+* 使用`input`就可以实现,设置`input`的`type=radio`
+
+
+
+## 单选框
+
+> 当你把`name`设置成一样的时候就是单选内容
+>
+> 设置`value`,这样在勾选的时候,你就可以获取内容
+
+```html
+    <span>
+        <input type="radio" name="gender" value="male">男
+        <input type="radio" name="gender" value="female">女
+    </span>
+```
+
+
+
+## 多选框
+
+> 设置`type=checkbox`
+
+```html
+    <span>
+        <input type="checkbox" name="hobby" value="basketball">篮球
+        <input type="checkbox" name="hobby" value="football">足球
+        <input type="checkbox" name="hobby" value="swimming">游泳
+    </span>
+```
+
+
+
+* 设置默认勾选
+
+> 使用`checked`选项
+
+```html
+        <input type="checkbox" name="hobby" value="basketball" checked>篮球
+```
+
+
+
+# 下拉选择框`select`
+
+> 你需要使用`option`添加你的选项内容.
+
+* 使用`selected`确定一个作为默认的选中的部分
+
+```html
+        <select name="place" id="place">
+            <option value="广东">广东</option>
+            <option value="广西">广西</option>
+            <option value="湖南">湖南</option>
+        </select>
+```
+
