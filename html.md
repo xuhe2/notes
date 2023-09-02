@@ -936,3 +936,110 @@ Copyright W3School.com.cn
         </select>
 ```
 
+
+
+# 字符实体
+
+* 可以直接查,为什么要记住
+
+## 空格
+
+> 使用`空格`的时候,只有`第一个空格`是被认可的,后面的空格都是被认为是`对代码格式的调整`
+>
+> 当我们需要使用一个空格的时候,使用`&nbsp;/&#160`.
+
+
+
+## 展示标签对应的代码部分
+
+> 比如`<h1>`,因为被解析的主要原因是因为有`<>`存在,所以,只需要把`<>`变成用别的方式表示就可以了
+>
+> `<`:`&lt;`
+>
+> `>`:`&gt;`
+
+
+
+## 展示`&`
+
+> 使用`&amp;`表示.
+
+
+
+# 全局属性
+
+
+
+## `ID`
+
+* 这是唯一的标识,只是对于一个HTML文件而言
+* 对于标签,有些不能加`ID`,比如只能有一个的,或者脚本标签.
+
+
+
+## `class`
+
+* 为了`CSS`
+
+
+
+## `style`
+
+* 存放样式的空间
+
+
+
+## `dir`
+
+> 存放在哪个部分
+
+
+
+# `META`
+
+
+
+## 兼容性
+
+> 设置`IE`使用的是`EDGE`的渲染的方式.
+
+```html
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+```
+
+
+
+## 设置视图
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1">
+```
+
+
+
+
+
+## 设置关键字`keywords`
+
+> 使用`keywords`
+
+```html
+<meta name="keywords" content="HTML,CSS,XML,JavaScript">
+```
+
+
+
+## 设置描述
+
+```html
+<meta name="description" content="This is my first website.">
+```
+
+
+
+## 自动刷新
+
+```html
+<meta http-equiv="refresh" content="3;url=https://www.baidu.com">
+```
+
