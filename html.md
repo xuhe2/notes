@@ -1043,3 +1043,128 @@ Copyright W3School.com.cn
 <meta http-equiv="refresh" content="3;url=https://www.baidu.com">
 ```
 
+
+
+# `H5`
+
+
+
+## 布局标签
+
+`header`:整个界面或者部分界面的头部
+
+`footer`:整个界面或者部分界面的底部
+
+`nav`:导航
+
+`article`:文章,帖子
+
+`section`:某段文字
+
+`aside`:侧边栏
+
+
+
+## 状态标签
+
+> 使用`<meter>`(注意,不能正常补全代码)
+
+```html
+<meter min="0" max="100" low="20" high="80" value="60"></meter>
+```
+
+* 注意.高于标准和低于标准都是不正常的,都需要警告.
+
+
+
+* 可以使用`optimum`设置有最优的值范围
+
+```html
+<meter min="0" max="100" low="20" high="80" value="100" optimum="90"></meter>
+```
+
+
+
+## 新增的列表标签
+
+> 使用的是`datalist`
+
+在`<input>`标签中可以使用`list`属性放上你的`datalist`,输入的内容可以在列表中进行筛选
+
+* 不如`JS`写的
+
+
+
+## 新增文本标签
+
+`<ruby>`添加拼音
+
+`<mark>`对一部分文字添加标记
+
+
+
+* 属性`required`,写上去之后代表当前的标签必须被填写.在`<radio>`中使用的时候,只需要写一次就可以全部起作用.在`checkbox`中使用的时候,表示当前的选项必须被选中.
+
+* 属性`autofocus`,在打开的时候自动选中这个标签.
+* 属性`autocomplete`,自动完成,保存以前的输入记录,不能使用在`type=password`
+
+* 属性`pattern`是正则表达式,一般和`required`配合使用
+
+
+
+## `<input>`的新增属性
+
+* `type=url`:邮箱`type`.
+
+* `type=url`:链接
+* `type=number`:数值模式,设置`step`(步长),可以设置上下范围`max`和`min`.
+* `type=search`:有一键清空的能力
+* `type=tel`:使用在手机端
+* `type=range`:范围选择拉条,可以设置`max`,`min`.使用`value`设置默认值
+* `type=color`:颜色选择器,`<input type="color">`
+
+* `type=date`:日期选择器
+
+
+
+## 视频标签
+
+> 使用`<video>`标签	
+
+* 使用`controls`设置可以被控制的进度条
+* 使用`muted`是静音状态
+* 使用`autoplay`自动播放(需要是在静音状态的时候)(或者在媒体参与度高的时候,一个网站可以被设定为可以不用静音也可以自动播放)
+* 使用`loop`,设置可以是自动播放
+
+* 使用`poster`设置封面的图片,使用的是图片(宽高比最好一致)
+* 使用`preload=auto`,进行预先加载,使用`metadata`的基本信息(比如总时长)加载好
+
+
+
+## 音频标签
+
+> 使用`<audio>`
+>
+> 注意,如果不使用`controls`属性会造成没有显示部分
+
+* `autoplay`的使用和`video`一样
+* 注意,静音的时候不能使用自动播放,因为没有意义
+
+* `muted`自动静音
+
+
+
+## 新增的全局属性
+
+* `contenteditable`:文本是否可以输入
+
+* `draggable`:可拖动的部分
+
+* `hidden`:不占位置消失
+* `spellcheck=true`:拼写检查
+
+
+
+## 兼容性
+
+1. 使用别人写的解决兼容性问题的`JS`脚本(可以使用判断在版本低的时候使用这个脚本)
