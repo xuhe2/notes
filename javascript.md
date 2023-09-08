@@ -481,3 +481,127 @@ function renderMarkdownFile(filePath, targetElementId) {
 }
 ```
 
+
+
+# 严格模式
+
+> 在开头使用`"use strict";`,使得脚本使用**现代**模式
+
+* 没有办法取消严格模式
+
+
+
+# 变量
+
+1. 变量名称必须仅包含字母、数字、符号 `$` 和 `_`。
+2. 首字符必须非数字。
+
+> 推荐使用`驼峰命名法`
+>
+> 严格区分大小写
+
+
+
+## 普通变量
+
+> 使用`let`
+
+
+
+## 常量
+
+> 使用`const`
+
+* 我们经常使用全部大写的方式表达这个变量
+
+
+
+## 类型
+
+1. number
+2. `BigInt`
+3. String
+
+> 在 JavaScript 中，有三种包含字符串的方式。
+>
+> 1. 双引号：`"Hello"`.
+> 2. 单引号：`'Hello'`.
+> 3. 反引号：``Hello``.
+>
+> 反引号是 **功能扩展** 引号。它们允许我们通过将变量和表达式包装在 `${…}` 中，来将它们嵌入到字符串中。
+>
+> ```javascript
+> let name = "John";
+> 
+> // 嵌入一个变量
+> alert( `Hello, ${name}!` ); // Hello, John!
+> 
+> // 嵌入一个表达式
+> alert( `the result is ${1 + 2}` ); // the result is 3
+> ```
+>
+> `$`运算符会被计算成一个变量
+
+4. Boolean
+
+> 使用`true`和`false`.
+
+
+
+### 检查变量类型
+
+> 使用`typeof`运算符
+
+* 注意,`typeof null` 的结果为 `"object"`。这是官方承认的 `typeof` 的错误，这个问题来自于 JavaScript 语言的早期阶段，并为了兼容性而保留了下来。`null` 绝对不是一个 `object`。`null` 有自己的类型，它是一个特殊值。`typeof` 的行为在这里是错误的。
+
+
+
+## 类型转换
+
+我们也可以显式地调用 `String(value)` 来将 `value` 转换为字符串类型：
+
+```javascript
+let value = true;
+alert(typeof value); // boolean
+
+value = String(value); // 现在，值是一个字符串形式的 "true"
+alert(typeof value); // string
+```
+
+
+
+> 在数学公式中进行计算的时候,会自动进行转换
+>
+> 不能正常表示的使用`NaN`表示
+
+
+
+# 交互
+
+1. `alert`
+
+弹出的这个带有信息的小窗口被称为 **模态窗**。“modal” 意味着用户不能与页面的其他部分（例如点击其他按钮等）进行交互，直到他们处理完窗口。在上面示例这种情况下 —— 直到用户点击“确定”按钮
+
+2. `prmpt`
+
+`prompt` 函数接收两个参数：
+
+```javascript
+result = prompt(title, [default]);
+```
+
+* 注意,如果用户不输入,会是`null`
+
+3. `confirm`
+
+`confirm` 函数显示一个带有 `question` 以及确定和取消两个按钮的模态窗口。
+
+点击确定返回 `true`，点击取消返回 `false`。
+
+例如：
+
+```javascript
+let isBoss = confirm("Are you the boss?");
+
+alert( isBoss ); // 如果“确定”按钮被按下，则显示 true
+```
