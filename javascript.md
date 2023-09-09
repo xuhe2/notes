@@ -243,6 +243,10 @@ alert("这是一条警告信息！");
 
 # 函数
 
+* 函数可以作为变量传递
+
+
+
 * 使用`function`定义
 
 ```javascript
@@ -261,6 +265,65 @@ function greetUser(name: string, age: number): void {
   console.log(`Hello, ${name}! You are ${age} years old.`);
 }
 ```
+
+
+
+## 设置默认值
+
+如果一个函数被调用，但有参数（argument）未被提供，那么相应的值就会变成 `undefined`。
+
+例如，之前提到的函数 `showMessage(from, text)` 可以只使用一个参数（argument）调用：
+
+```javascript
+showMessage("Ann");
+```
+
+
+
+那不是错误，这样调用将输出 `"*Ann*: undefined"`。因为参数 `text` 的值未被传递，所以变成了 `undefined`。
+
+我们可以使用 `=` 为函数声明中的参数指定所谓的“默认”（如果对应参数的值未被传递则使用）值：
+
+```javascript
+function showMessage(from, text = "no text given") {
+  alert( from + ": " + text );
+}
+
+showMessage("Ann"); // Ann: no text given
+```
+
+
+
+* 早期的时候,没有默认值的写法,需要显示的判断然后添加
+
+
+
+## 箭头函数
+
+* 匿名函数
+
+它被称为“箭头函数”，因为它看起来像这样：
+
+```javascript
+let func = (arg1, arg2, ..., argN) => expression;
+```
+
+> 让我们来看一个具体的例子：
+>
+> ```javascript
+> let sum = (a, b) => a + b;
+> 
+> /* 这个箭头函数是下面这个函数的更短的版本：
+> 
+> let sum = function(a, b) {
+>   return a + b;
+> };
+> */
+> 
+> alert( sum(1, 2) ); // 3
+> ```
+
+
 
 
 
@@ -313,6 +376,18 @@ switch (expression) {
 }
 ```
 
+* 你需要使用`break`语句
+
+> 可以通过不适用`break`语句,把多种情况连在一起
+
+```javascript
+  case '0':
+  case '1':
+    alert( 'One or zero' );
+```
+
+
+
 
 
 # 对象
@@ -342,6 +417,115 @@ var person = {
   },
 };
 ```
+
+
+
+* 注意,最后的属性应该使用`,`结尾
+
+
+
+* 对象中可以使用`this`
+
+
+
+## 访问属性(在不确定是否存在的时候)
+
+
+
+* 当你访问不存在的属性值的时候,属性值是`undefined`,你可以使用`in`去检查是否存在这个属性名(注意,只能是属性名)
+
+
+
+
+
+* 使用遍历的方式查找属性值
+
+> 使用`for in`语句
+
+语法：
+
+```javascript
+for (key in object) {
+  // 对此对象属性中的每个键执行的代码
+}
+```
+
+
+
+> 当你在遍历访问属性的时候,如果可以转换成`number`的属性名是自动排序的
+
+
+
+## 引用和赋值
+
+> 把一个原始类型直接赋值给别的东西的时候,是拷贝
+>
+> 但是,对象是引用
+
+```javascript
+Object.assign(dest, [src1, src2, src3...])
+```
+
+
+
+我们也可以用 `Object.assign` 代替 `for..in` 循环来进行简单克隆：
+
+```javascript
+let user = {
+  name: "John",
+  age: 30
+};
+
+let clone = Object.assign({}, user);
+```
+
+它将 `user` 中的所有属性拷贝到了一个空对象中，并返回这个新的对象。
+
+还有其他克隆对象的方法，例如使用 [spread 语法](https://zh.javascript.info/rest-parameters-spread) `clone = {...user}`，在后面的章节中我们会讲到。
+
+
+
+
+
+## 多词属性
+
+> 对于中间使用`空格`分隔的属性无法使用`.`的方式直接访问,选哟使用`[]`的方式
+
+
+
+## 对象中的键使用变量
+
+> 使用`[]`包裹变量
+
+例如：
+
+```javascript
+let fruit = prompt("Which fruit to buy?", "apple");
+
+let bag = {
+  [fruit]: 5, // 属性名是从 fruit 变量中得到的
+};
+
+alert( bag.apple ); // 5 如果 fruit="apple"
+```
+
+
+
+> 我们可以使用更加复杂的方式
+
+我们可以在方括号中使用更复杂的表达式：
+
+```javascript
+let fruit = 'apple';
+let bag = {
+  [fruit + 'Computers']: 5 // bag.appleComputers = 5
+};
+```
+
+
+
+* 属性名不受关键词的限制
+* 你在设置和查询属性的时候,属性名都会被转变成为字符串的格式
 
 
 
@@ -605,3 +789,125 @@ let isBoss = confirm("Are you the boss?");
 
 alert( isBoss ); // 如果“确定”按钮被按下，则显示 true
 ```
+
+
+
+# 比较
+
+* 字符串比较
+
+> 根据字典序
+
+* 数字和字符串比较
+
+> 转换成数字比较
+
+
+
+## 严格比较
+
+普通的相等性检查 `==` 存在一个问题，它不能区分出 `0` 和 `false`
+
+**严格相等运算符 `===` 在进行比较时不会做任何的类型转换**
+
+通过比较 `null` 和 0 可得：
+
+```javascript
+alert( null > 0 );  // (1) false
+alert( null == 0 ); // (2) false
+alert( null >= 0 ); // (3) true
+```
+
+
+
+# 空值合并运算符
+
+`a ?? b` 的结果是：
+
+- 如果 `a` 是已定义的，则结果为 `a`，
+- 如果 `a` 不是已定义的，则结果为 `b`。
+
+例如，在这里，如果 `user` 的值不为 `null/undefined` 则显示 `user`，否则显示 `匿名`：
+
+```javascript
+let user;
+
+alert(user ?? "匿名"); // 匿名（user 未定义）
+```
+
+在下面这个例子中，我们将一个名字赋值给了 `user`：
+
+```javascript
+let user = "John";
+
+alert(user ?? "匿名"); // John（user 已定义）
+```
+
+
+
+# `new`
+
+构造函数在技术上是常规函数。不过有两个约定：
+
+1. 它们的命名以大写字母开头。
+2. 它们只能由 `"new"` 操作符来执行。
+
+换句话说，`new User(...)` 做的就是类似的事情：
+
+```javascript
+function User(name) {
+  // this = {};（隐式创建）
+
+  // 添加属性到 this
+  this.name = name;
+  this.isAdmin = false;
+
+  // return this;（隐式返回）
+}
+```
+
+
+
+## 检查是否使用`new`构造
+
+> 使用`new.target`语法
+
+我们也可以让 `new` 调用和常规调用做相同的工作，像这样：
+
+```javascript
+function User(name) {
+  if (!new.target) { // 如果你没有通过 new 运行我
+    return new User(name); // ……我会给你添加 new
+  }
+
+  this.name = name;
+}
+
+let john = User("John"); // 将调用重定向到新用户
+alert(john.name); // John
+```
+
+
+
+在构造器中,直接`return`返回的是`this`.
+
+
+
+# 访问可能不存在的元素
+
+> 可以使用`?`
+
+可能最先想到的方案是在访问该值的属性之前，使用 `if` 或条件运算符 `?` 对该值进行检查，像这样：
+
+```javascript
+let user = {};
+
+alert(user.address ? user.address.street : undefined);
+```
+
+
+
+# `symbol`
+
+> 代表唯一标识符
+
