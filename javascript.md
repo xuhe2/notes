@@ -740,6 +740,287 @@ function renderMarkdownFile(filePath, targetElementId) {
 
 
 
+## 数字类型
+
+假如我们需要表示 10 亿。显然，我们可以这样写：
+
+```javascript
+let billion = 1000000000;
+```
+
+我们也可以使用下划线 `_` 作为分隔符：
+
+```javascript
+let billion = 1_000_000_000;
+```
+
+在 JavaScript 中，我们可以通过在数字后面附加字母 `"e"` 并指定零的个数来缩短数字：
+
+```javascript
+let billion = 1e9;  // 10 亿，字面意思：数字 1 后面跟 9 个 0
+
+alert( 7.3e9 );  // 73 亿（与 7300000000 和 7_300_000_000 相同）
+```
+
+换句话说，`e` 把数字乘以 `1` 后面跟着给定数量的 0 的数字。
+
+
+
+* 转换为进制数
+
+> 使用`num.toString(base)`方法
+
+
+
+```
+Math.floor
+```
+
+向下舍入：`3.1` 变成 `3`，`-1.1` 变成 `-2`。
+
+```
+Math.ceil
+```
+
+向上舍入：`3.1` 变成 `4`，`-1.1` 变成 `-1`。
+
+```
+Math.round
+```
+
+向最近的整数舍入：`3.1` 变成 `3`，`3.6` 变成 `4`，中间值 `3.5` 变成 `4`。
+
+`Math.trunc`（IE 浏览器不支持这个方法）
+
+移除小数点后的所有内容而没有舍入：`3.1` 变成 `3`，`-1.1` 变成 `-1`
+
+
+
+## 字符串类型
+
+* 注意,是`只读`的
+
+> 使用反引号的时候,可以插入值和换行.
+
+> 访问字符的时候
+>
+> 1. 使用下标访问的方式
+> 2. 使用`charAt()`方法
+
+我们也可以使用 `for..of` 遍历字符：
+
+```javascript
+for (let char of "Hello") {
+  alert(char); // H,e,l,l,o（char 变为 "H"，然后是 "e"，然后是 "l" 等）
+}
+```
+
+[toLowerCase()](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/String/toLowerCase) 和 [toUpperCase()](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/String/toUpperCase) 方法可以改变大小写：
+
+```javascript
+alert( 'Interface'.toUpperCase() ); // INTERFACE
+alert( 'Interface'.toLowerCase() ); // interface
+```
+
+
+
+* 查找字符串
+
+> 使用`indexOf`方法
+>
+> * 注意,在如果把查找语句作为`if`语句的条件的时候,需要手动和`-1`比较
+
+它从给定位置 `pos` 开始，在 `str` 中查找 `substr`，如果没有找到，则返回 `-1`，否则返回匹配成功的位置。
+
+例如：
+
+```javascript
+let str = 'Widget with id';
+
+alert( str.indexOf('Widget') ); // 0，因为 'Widget' 一开始就被找到
+alert( str.indexOf('widget') ); // -1，没有找到，检索是大小写敏感的
+
+alert( str.indexOf("id") ); // 1，"id" 在位置 1 处（……idget 和 id）
+```
+
+### 
+
+更现代的方法 [str.includes(substr, pos)](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/String/includes) 根据 `str` 中是否包含 `substr` 来返回 `true/false`。
+
+如果我们需要检测匹配，但不需要它的位置，那么这是正确的选择：
+
+```javascript
+alert( "Widget with id".includes("Widget") ); // true
+
+alert( "Hello".includes("Bye") ); // false
+```
+
+`str.includes` 的第二个可选参数是开始搜索的起始位置：
+
+```javascript
+alert( "Widget".includes("id") ); // true
+alert( "Widget".includes("id", 3) ); // false, 从位置 3 开始没有 "id"
+```
+
+方法 [str.startsWith](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith) 和 [str.endsWith](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith) 的功能与其名称所表示的意思相同：
+
+```javascript
+alert( "Widget".startsWith("Wid") ); // true，"Widget" 以 "Wid" 开始
+alert( "Widget".endsWith("get") ); // true，"Widget" 以 "get" 结束
+```
+
+
+
+* 字符串切片
+
+> 使用**str.slice(start [, end])**,后半部分不包括
+>
+> 可以使用负数值从结尾开始
+
+| 方法                    | 选择方式……                                | 负值参数            |
+| :---------------------- | :---------------------------------------- | :------------------ |
+| `slice(start, end)`     | 从 `start` 到 `end`（不含 `end`）         | 允许                |
+| `substring(start, end)` | 从 `start` 到 `end`（不含 `end`）         | 负值被视为 `0`      |
+| `substr(start, length)` | 从 `start` 开始获取长为 `length` 的字符串 | 允许 `start` 为负数 |
+
+
+
+## 数组方法
+
+- `push` 在末端添加一个元素.
+- `shift` 取出队列首端的一个元素，整个队列往前移，这样原先排第二的元素现在排在了第一。
+
+- `push` 在末端添加一个元素.
+- `pop` 从末端取出一个元素.
+- `unshift`往首部分添加一个元素
+
+
+
+> 注意,本质是`对象`
+
+
+
+> 使用`toSring`方法会把数组变成中间使用`,`链接起来的字符串
+
+
+
+> 注意,不能使用`==`比较数组
+
+
+
+* 删除数组元素(直接`delete`会造成位置空缺)
+
+> 使用`splice`,
+
+我们可以将 `deleteCount` 设置为 `0`，`splice` 方法就能够插入元素而不用删除任何元素：
+
+```javascript
+let arr = ["I", "study", "JavaScript"];
+
+// 从索引 2 开始
+// 删除 0 个元素
+// 然后插入 "complex" 和 "language"
+arr.splice(2, 0, "complex", "language");
+
+alert( arr ); // "I", "study", "complex", "language", "JavaScript"
+```
+
+
+
+* `concat`
+
+> [arr.concat](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Array/concat) 创建一个新数组，其中包含来自于其他数组和其他项的值。
+>
+> 语法：
+>
+> ```javascript
+> arr.concat(arg1, arg2...)
+> ```
+
+如果类数组对象具有 `Symbol.isConcatSpreadable` 属性，那么它就会被 `concat` 当作一个数组来处理：此对象中的元素将被添加：
+
+```javascript
+let arr = [1, 2];
+
+let arrayLike = {
+  0: "something",
+  1: "else",
+  [Symbol.isConcatSpreadable]: true,
+  length: 2
+};
+
+alert( arr.concat(arrayLike) ); // 1,2,something,else
+```
+
+
+
+> 查找一个内容可以使用`indexOf`,`incldes`,使用`includes`可以发现`NaN`,但是另一个不行
+
+
+
+* `find`
+
+这时可以用 [arr.find](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Array/find) 方法。
+
+语法如下：
+
+```javascript
+let result = arr.find(function(item, index, array) {
+  // 如果返回 true，则返回 item 并停止迭代
+  // 对于假值（falsy）的情况，则返回 undefined
+});
+```
+
+例如，我们有一个存储用户的数组，每个用户都有 `id` 和 `name` 字段。让我们找到 `id == 1` 的那个用户：
+
+```javascript
+let users = [
+  {id: 1, name: "John"},
+  {id: 2, name: "Pete"},
+  {id: 3, name: "Mary"}
+];
+
+let user = users.find(item => item.id == 1);
+
+alert(user.name); // John
+```
+
+
+
+### [filter](https://zh.javascript.info/array-methods#filter)
+
+`find` 方法搜索的是使函数返回 `true` 的第一个（单个）元素。
+
+如果需要匹配的有很多，我们可以使用 [arr.filter(fn)](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)。
+
+语法与 `find` 大致相同，但是 `filter` 返回的是所有匹配元素组成的数组：
+
+```javascript
+let results = arr.filter(function(item, index, array) {
+  // 如果 true item 被 push 到 results，迭代继续
+  // 如果什么都没找到，则返回空数组
+});
+```
+
+例如：
+
+```javascript
+let users = [
+  {id: 1, name: "John"},
+  {id: 2, name: "Pete"},
+  {id: 3, name: "Mary"}
+];
+
+// 返回前两个用户的数组
+let someUsers = users.filter(item => item.id < 3);
+
+alert(someUsers.length); // 2
+```
+
+
+
+
+
 ## 类型转换
 
 我们也可以显式地调用 `String(value)` 来将 `value` 转换为字符串类型：
@@ -757,6 +1038,10 @@ alert(typeof value); // string
 > 在数学公式中进行计算的时候,会自动进行转换
 >
 > 不能正常表示的使用`NaN`表示
+
+
+
+> 数字类型转换的时候,会忽略开头结尾的空格
 
 
 
@@ -911,3 +1196,10 @@ alert(user.address ? user.address.street : undefined);
 
 > 代表唯一标识符
 
+> 不会自动转换
+>
+> 转换为`string`类型的时候,需要使用`toString`方法
+
+* 注意,对象中存在这个元素的时候,这个`for..in`语句会被跳过
+
+> 当我们需要名字相同的`symbol`有相同的属性的时候,使用`Symbol.for()`的方式
