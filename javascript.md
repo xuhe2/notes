@@ -428,6 +428,18 @@ var person = {
 
 
 
+> 对象的属性可以不适用`""`来包括属性名,但是遇到特殊字符空格等必须使用
+
+> 对象的方法在写的时候需要使用`XXX:function(){}`,使用的是匿名函数
+
+
+
+## 访问属性
+
+1. 使用`for in`语句遍历里面的内容
+
+
+
 ## 访问属性(在不确定是否存在的时候)
 
 
@@ -438,17 +450,19 @@ var person = {
 
 
 
-* 使用遍历的方式查找属性值
+* 使用遍历的方式查找属性名(输出的类型是字符串)
 
 > 使用`for in`语句
 
 语法：
 
 ```javascript
-for (key in object) {
+for (let key in object) {
   // 对此对象属性中的每个键执行的代码
 }
 ```
+
+* 注意,当你访问的数字型的时候,会出问题
 
 
 
@@ -526,6 +540,20 @@ let bag = {
 
 * 属性名不受关键词的限制
 * 你在设置和查询属性的时候,属性名都会被转变成为字符串的格式
+
+
+
+## 内置对象
+
+
+
+### `Math`
+
+> 可以使用`Math.PI`来访问圆周率
+
+> 有`ceil`,`floor`,`round`,`random`等方法
+
+
 
 
 
@@ -1203,3 +1231,176 @@ alert(user.address ? user.address.street : undefined);
 * 注意,对象中存在这个元素的时候,这个`for..in`语句会被跳过
 
 > 当我们需要名字相同的`symbol`有相同的属性的时候,使用`Symbol.for()`的方式
+
+
+
+# `const`的使用
+
+* 对于基本的数据类型,如果设置为`const`,那么就不能修改值了
+
+* 对于对象这种复杂的数据类型,即使设置为`const`,依旧可以修改内容
+
+> 复杂数据类型内部保存的是指向真实内容的地址,所以,你修改内容的时候,不会修改地址,所以,可以修改真实的内容
+>
+> 当你给它赋值一个新的数组的时候,它会报错
+
+
+
+# DOM
+
+> 用来使用`WEB API`
+
+
+
+## 获取`DOM`元素
+
+> 使用`CSS`元素选择器获取`DOM`元素
+
+```javascript
+let myBox = document.querySelector('.box');
+```
+
+* 注意,你只能找到第一个元素
+
+* 你可以使用选择器的语法来查找`DOM元素`.
+
+
+
+> 使用`CSS选择器`查找全部的元素,获取的是一个数组
+
+```javascript
+		let myBox = document.querySelectorAll('.box');
+        for (let i = 0; i < myBox.length; i++) {
+            console.log(myBox[i]);
+        }
+```
+
+
+
+> 修改常用的样式的时候,可以直接使用`.样式名字`的方式修改
+
+> 修改样式的属性的时候
+>
+> 1. 使用直接使用`.样式属性名字`的方式访问
+>
+> * 如果出现`-`在中间,使用小驼峰命名法可以访问
+>
+> ```javascript
+> myBox[i].style.width = "100px";
+> ```
+>
+> 2. 使用`className`修改
+>
+> ```javascript
+> myBox[i].className = "box2";
+> ```
+>
+> 3. 当同时使用多个样式类的时候,使用`classList`来修改
+>
+> > 使用`add`追加
+> >
+> > 使用`remove`删除
+> >
+> > 使用`toggle`实现切换,有的话就删除,没有的话就添加
+
+
+
+## 自定义的属性名字
+
+> 使用`data-{自定义的类型名字}`来实现自定义的`CSS`属性名字
+>
+> 在访问的时候,可以使用`元素.dataset.自定义的ID名字`来实现访问.
+
+
+
+## 使用定时器(间歇函数)
+
+> 定时器,使用间歇函数
+
+```javascript
+		function printOk() {
+            console.log("ok");
+        }
+        setInterval(printOk, 1000);
+```
+
+> 第一个参数是需要被执行的函数,第二个参数是以`ms`为单位的每次执行间隔的时间
+>
+> 返回的是一个id数字,这个是并发的,一个界面可以存在多个定时器,每个定时器都有一个独一无二的ID.
+
+
+
+> 关闭定时器
+
+> 使用`clearInterval`
+
+
+
+## 添加事件响应
+
+> 使用`元素名.addEventListener(事件名字,需要被执行的函数名字)`
+
+
+
+## 事件类型
+
+鼠标
+
+> click
+>
+> mouseenter
+>
+> mouseleave
+
+焦点事件
+
+> focus
+>
+> blur
+
+键盘事件
+
+> keydown
+>
+> keyup
+
+文本事件
+
+> input
+
+
+
+## 事件对象
+
+> 当你在使用处理事件函数的时候,
+
+```javascript
+		element.addEventListener('input', function (e) {
+            console.log(e.target.value);
+        });
+```
+
+> 其中的参数`e(回调函数的第一个参数)`是事件对象,存储了这个事件的一些内容
+
+
+
+属性
+
+> `type`当前的事件类型
+>
+> `clientX/clientY`获取光标相对于浏览器可见窗口左上角的位置
+>
+> `offsetX/offsetY`获取光标相对于当前的`DOM`元素的左上角的位置
+>
+> `key`查看按下的值
+
+
+
+## 环境对象
+
+> 使用`this`,指向的是`window`(在非严格的情况下面)
+
+
+
+## 事件流
+
