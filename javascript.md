@@ -325,6 +325,16 @@ let func = (arg1, arg2, ..., argN) => expression;
 
 
 
+* 当形参只有一个的时候,可以不适用小括号
+* 当函数的执行语句只有一句的时候,可以不使用大括号,可以不适用`return`语句
+* 箭头函数不能使用`arguments`,使用剩余参数
+
+
+
+### 箭头函数的THIS
+
+调用者的`this`是往上找可以找到的使用它的元素的`this`.
+
 
 
 # 事件
@@ -552,6 +562,40 @@ let bag = {
 > 可以使用`Math.PI`来访问圆周率
 
 > 有`ceil`,`floor`,`round`,`random`等方法
+
+
+
+## `get/set`访问对象的属性
+
+这是一个使用 `get/set` 实现 `user.name` 的示例：
+
+```javascript
+class User {
+
+  constructor(name) {
+    // 调用 setter
+    this.name = name;
+  }
+
+  get name() {
+    return this._name;
+  }
+
+  set name(value) {
+    if (value.length < 4) {
+      alert("Name is too short.");
+      return;
+    }
+    this._name = value;
+  }
+
+}
+
+let user = new User("John");
+alert(user.name); // John
+
+user = new User(""); // Name is too short.
+```
 
 
 
@@ -1350,7 +1394,7 @@ let myBox = document.querySelector('.box');
 >
 > mouseenter
 >
-> mouseleave
+> mouseleave(没有事件冒泡)
 
 焦点事件
 
@@ -1404,3 +1448,454 @@ let myBox = document.querySelector('.box');
 
 ## 事件流
 
+> 是`addEventListener`函数中的第三个参数,设置`true/false`
+>
+> `true`是在捕获的时候使用函数
+>
+> `false`是在冒泡的时候使用函数
+
+* 当事件依次发生的时候使用
+
+
+
+* 阻止冒泡
+
+> 使用`stopPropagation`
+
+
+
+## DOM节点
+
+> DOM树的所有内容都是元素节点
+
+
+
+### 查找结点
+
+* 父节点
+
+```javascript
+let myFather = myBtn.parentNode;
+```
+
+> 返回的也是对象
+
+> 在关闭广告的时候,使用关闭父节点的东西
+
+
+
+* 子节点
+
+> 使用`children`
+>
+> 仅获得全部的元素节点
+
+
+
+* 兄弟节点
+
+> 
+
+
+
+* 创建节点
+
+```javascript
+let newButton = document.createElement("button");
+```
+
+> 需要使用别的方式放入页面
+
+
+
+* 增加节点
+
+> 使用`addElement`方法
+
+
+
+* 插入节点
+
+> 使用`insertElement`
+
+
+
+# 事件委托
+
+> 把需要多次实现的内容直接放在父元素上
+
+* 使用事件冒泡的方式实现的,减少了多次注册的情况出现
+
+> 把事件代码写在父元素上
+
+
+
+比如,对`<ul>`使用
+
+> 可以使用`target`查看点击的对象的信息
+
+
+
+# 阻止默认行为
+
+> 直接查找表单然后使用`preventDefault`
+>
+> 注意,可以使用这个方法去阻止其他的默认行为,比如`<a>`的跳转
+
+
+
+# 界面加载事件
+
+使用`load`事件可以检测是否完全加载界面
+
+> 注意,界面的内容需要全部加载
+
+使用`DOMContentLoaded`,检测是否加载好基本的HTML文件的结构
+
+
+
+# 元素滚动事件
+
+> 使用`document.documentElement.scrollTop`检查界面滚动的情况
+
+* 得到的数字类型,是上头隐藏占据的像素值
+* 注意,你可以使用这个数字直接初始化这个值
+
+
+
+# 界面尺寸事件
+
+当你在改变浏览器的窗口大小的时候会发生的事件
+
+> 事件的名字叫做`resize`
+
+> 获取的是可见部分的宽高,使用`clientWidth`,`clientHeight`
+
+
+
+# 日期类
+
+> 使用`const date = new Date();`可以获得需要的
+
+
+
+* 注意,使用`getMonth`访问月份的时候,`date.getMonth()`需要+1,因为下表从0开始
+
+
+
+# 事件戳
+
+> 是毫秒数
+>
+> 使用时间戳可以直接进行加减操作
+
+
+
+## 使用方法
+
+
+
+```javascript
+const date = +new Date();
+```
+
+直接进行类型转换,转换为数字类型计算时间戳
+
+
+
+````javascript
+		const date = new Date();
+        console.log(date.getTime());
+````
+
+使用`getTime`方法
+
+
+
+```javascript
+Date.now()
+```
+
+使用类的静态方法
+
+
+
+# `BOM`
+
+最大的部分是`window`,`docement`是从window下面来的
+
+
+
+## 定时器(延时函数)
+
+> 定时函数包含这个`setInterval`函数,延时函数是过了一段时间之后使用,使用`setTimeout`函数
+
+* 注意,延迟函数只执行一次
+
+> 使用`clearTimeout`去除延时函数
+
+
+
+# 时间循环
+
+
+
+## `JS`的执行机制
+
+> 单线程的执行方式
+
+> `H5`使用`WEB WORKER`的方式,让JS可以使用多线程
+
+
+
+* 分成`执行栈`和`任务队列`
+
+
+
+# 不跳转界面
+
+使用`<a>`标签中设置`href`为`#/XXX`
+
+
+
+# location
+
+> reload 刷新界面
+>
+> * 参数使用`true`,强制刷新
+
+> href 设置界面的URL
+
+
+
+# navigator
+
+> 用来获取浏览器的相关学习
+
+* 比如,实现移动端和PC端不同的界面
+
+
+
+# history
+
+> forward 前进一步
+>
+> back 后退一步
+>
+> go(n) 执行n步,-1是倒退
+
+
+
+# 本地存储
+
+> 数据存储到用户的浏览器中
+>
+> * 在刷新的时候不会丢失数据
+
+
+
+`localStorage.setItem('isLogin', false);`
+
+保存一个数据到本地数据库,一直存在
+
+使用`key:value`的方式
+
+* 可以使用这个方式修改
+
+
+
+`console.log(localStorage.getItem('isLogin'));`
+
+获取一个数据,使用`key`
+
+
+
+`localStorage.removeItem('isLogin')`
+
+删除值
+
+
+
+# map
+
+可以遍历处理数组，返回新的数组
+
+
+
+> `arr_name.map((element,index)=>{})`
+>
+> * 返回新的数组
+
+
+
+# join
+
+把数组中的内容连接起来成为字符串
+
+* 默认使用`,`分割
+* 可以传递字符串参数,实现用参数链接字符串
+
+
+
+  # 正则表达式
+
+1. 定义一个规则字符串
+2. 使用`test`方法检查 ,返回`true/false`
+
+`let template = //`
+
+3. 使用`exec`,返回的是数组
+
+
+
+## 替换
+
+> 使用`replace`方法实现
+
+
+
+# `JS`函数闭包
+
+> 使用函数闭包的方式相当于实现了一个类的效果
+>
+> 注意,因为函数的作用域的问题,闭包函数的内部的数据不能被外部元素访问,但是可以使用内部的函数访问,只要返回函数就可以成功访问,实现私有化的数据.
+
+
+
+# 变量提升
+
+使用`var`声明变量时候出现的问题,允许变量在被声明之前使用
+
+```javascript
+var number;
+```
+
+
+
+> 具体的操作是提升了声明的代码位置(不会提升赋值的语句),提升到当前作用域的最前面
+
+ 
+
+* 函数使用的时候,默认是提升到作用域的前面
+
+
+
+# 函数进阶
+
+
+
+## 动态参数
+
+> 在每个函数里面都有一个属性`arguments`(动态参数)
+
+```javascript
+		function getSum() {
+            for (let i = 0; i < arguments.length; i++) {
+                console.log(arguments[i]);
+            }
+        }
+        getSum(1, 2, 3);
+```
+
+
+
+## 剩余参数
+
+> 获取的是真数组,可以使用数组方法
+
+```javascript
+		function func(number, ...arr) {
+            console.log(number);
+            console.log(arr);
+        }
+        func(1, 2, 3)
+```
+
+* 在箭头函数中没有`arguments`
+* 使用剩余参数可以很方便地实现功能
+
+
+
+# 展开运算符
+
+> 使用`...`
+
+
+
+* 用来实现求数组中的最大值,最小值
+
+```javascript
+		const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        console.log(Math.max(...arr));
+```
+
+
+
+* 可以使用展开运算符实现合并数组
+
+
+
+# 数组解构
+
+解构赋值
+
+```javascript
+const [a,b,c] = arr;
+```
+
+
+
+例如
+
+交换两个变量
+
+```javascript
+;[a,b] = [b,a]
+```
+
+
+
+* 超过范围的时候是`undefined`
+* 可以使用默认参数 
+
+
+
+# 对象解构
+
+> 使用对象解构,并且修改默认的名字
+
+```javascript
+		let obj = {
+            name: 'john',
+            age: 20,
+        }
+        let { name: n, age } = obj;
+        console.log(n, age);
+```
+
+
+
+# 构造函数
+
+使用`new`的方式直接创建一个对象
+
+```javascript
+function O(name){
+    this.name = name;
+}
+let obj = new O;
+```
+
+> 不需要使用`return`关键字
+
+
+
+
+
+# 节流
+
+为了防止短时间里面多次访问,所以,使用`节流`的方式
+
+
+
+* 针对`video`标签,我们可以使用它的特殊属性
