@@ -466,3 +466,423 @@ WHERE condition;
 - `column1 = value1, column2 = value2, ...`：列名和新值的对应关系。您可以一次更新多列。
 - `WHERE`：可选，用于指定哪些行将被更新的条件。
 - `condition`：可选，是一个布尔表达式，用于确定哪些行将被更新。如果省略 `WHERE` 子句，将更新表中的所有行
+
+
+
+
+
+# 第一次实验
+
+规定至多30字符的字符串
+
+```sql
+CREATE TABLE YourTable (
+    YourColumn VARCHAR(30) -- 在这里指定最大长度为 30 字符
+);
+```
+
+
+
+* 字符串需要使用单引号`'`
+
+
+
+拼接字符串
+
+> 使用`CONCAT`实现
+
+```sql
+UPDATE your_table
+SET your_column = CONCAT(your_column, '给定的字符串')
+WHERE condition;
+```
+
+
+
+* 删除表的时候使用`DROP`
+* 删除数据的时候使用`DELETE`
+
+
+
+# relational algebra (使用关系代数)
+
+## operator
+
+1. **关系（Relation）**：在关系代数中，关系是一个包含元组（行）的表，每个元组由属性（列）组成。关系可以表示为 R(A, B, C)，其中 R 是关系的名称，A、B、C 是属性。
+2. **选择操作（Selection）**：选择操作用于从关系中选择满足特定条件的元组。它类似于 SQL 中的 WHERE 子句。例如，σ_A>5(R) 表示从关系 R 中选择所有 A 大于 5 的元组。
+3. **投影操作（Projection）**：投影操作用于从关系中选择特定属性，以创建一个包含较少属性的新关系。它类似于 SQL 中的 SELECT 子句。例如，π_A, B(R) 表示从关系 R 中选择属性 A 和属性 B，忽略其他属性。
+4. **并运算（Union）**：并运算用于将两个关系的元组合并为一个新的关系。它要求两个关系具有相同的属性。例如，R ∪ S 表示关系 R 和关系 S 的并运算。
+5. **差运算（Difference）**：差运算用于从一个关系中移除另一个关系中的元组。它也要求两个关系具有相同的属性。例如，R - S 表示从关系 R 中移除与关系 S 中匹配的元组。
+6. **交运算（Intersection）**：交运算用于找到两个关系中共同存在的元组。也需要两个关系具有相同的属性。例如，R ∩ S 表示关系 R 和关系 S 的交运算。
+7. **笛卡尔积（Cartesian Product）**：笛卡尔积操作用于生成两个关系的所有可能组合的元组。例如，R × S 表示关系 R 和关系 S 的笛卡尔积。
+8. **连接运算（Join）**：连接操作用于将两个关系中的元组基于特定条件合并在一起。连接可以是等值连接或非等值连接，用于从多个表中获取相关信息。
+
+
+
+从一个表中拿东西
+$$
+π_{title,year}(movies)
+$$
+
+> 下标的内容是需要提取的数据
+>
+> 括号里面是表的名字
+
+* eliminate duplicate tuples , if any 会自动去重
+* 在实际的SQL查询中,不会自动去重
+
+
+$$
+π_{title,year+1}(movies)
+$$
+
+> 可以使用表达式来计算列的内容
+
+$$
+π_{title,title}(movies)
+$$
+
+> 可以构建原本相同的内容的列,但是,这两个列的名字不能一样.
+
+
+$$
+σ_{studioName='Disney'}(movies)
+$$
+
+> 筛选条件设置,筛选表中符合条件的全部元素.
+
+* 可以设置`^`作为`and`符号
+
+
+$$
+π_{title,year}(σ_{studioName='Disney'}(movies))
+$$
+
+> 可以复合使用
+
+
+$$
+A×B
+$$
+
+> 笛卡尔积合并两个集合
+
+* 如果合并的两个表的列的名字是相同的,合并的时候,会使用`A.columnName`和`B.columnName`方式
+
+$$
+\sigma_{studioName=name}(A×B)
+$$
+
+
+
+
+
+
+
+自然连接（natural join）和θ连接（theta join）都是关系代数中的连接操作，用于将两个关系表中的元组进行匹配。自然连接是在两个表中所有同名属性上进行匹配，而θ连接则是在指定的属性上进行匹配。
+
+自然连接的符号为⋈，θ连接的符号为⋈θ。
+
+
+$$
+⋈_{\theta}\\
+\pi_{address}(movies⋈_{studioNmae=name}studio)
+$$
+
+> 简化了叉乘然后搜索的部分
+
+
+$$
+A⋈B
+$$
+
+> 会去掉重复的一致的属性列,并且只保留有这些一致属性的数据叉乘之后出来的结果
+
+* 相当于自动配对这些相同的部分数据然后组合合并起来
+
+
+$$
+\rho_{s(A1,A2....An)}()
+$$
+
+> 使用重命名方式
+
+$$
+\rho_{name,title,year}(tableName)
+$$
+
+
+$$
+\cap~交集
+\\
+\cup~并集
+$$
+
+> 合并两个数据表
+
+
+$$
+R-S
+$$
+
+> 在数据表R中但是不在数据表S中的数据
+
+
+$$
+A\cap B~=~A-(A-B)
+$$
+
+
+
+
+
+
+
+$$
+A~\div~B
+$$
+
+> 满足B数据中所有的内容,并且在A数据中
+
+
+
+# 简单的查询使用SQL
+
+clause : 条款
+
+* SQL区分大小写，所以我们需要严格写出
+
+
+
+not运算符
+
+```sql
+SELECT * FROM table_name WHERE not(....)
+```
+
+
+
+`*`运算符代表全部的属性
+
+如何在关系代数中不使用`pi`,那么就是查找全部的属性内容,使用`*`运算符.
+
+
+
+* `WHERE`不是必要的,不存在`WHERE`的时候,**全正确/都需要返回**
+
+
+
+* 保留两位小数
+
+```sql
+SELECT cast(minutes as decimal(10,2))...
+```
+
+
+
+* 往里面添加一个常量
+
+```sql
+SELECT year , 'this is a string' as myString ...
+```
+
+列的名字是`myString`,这个是修改列名字的写法,并且添加了一个常数属性
+
+> 我们可以使用`as <new name>`的方式来重命名任意一个列的名字
+
+
+
+# 状态运算语句的三种可能的结果
+
+1. true
+2. false
+3. unkown
+
+> 可以认为
+>
+> true : 1
+>
+> unkown : 0.5
+>
+> false :  0
+>
+> and = min
+>
+> or = max
+
+
+
+# NULL
+
+1. 不可访问,是missing value
+2. 不可使用的.
+
+
+
+> 状况语句包含三种结果,true/false/unkown
+>
+> 只有true的时候,成功
+
+* 所有和NULL的比较的值是`UNKOWN`,所以,不能执行
+
+
+
+## 找到NULL的值
+
+因为不可以对NULL值使用`=`运算符比较
+
+我们使用`WHERE XXX IS NULL`来比较,这个只返回`true/false`
+
+```sql
+WHERE XXX IS NULL
+WHERE XXX IS NOT NULL
+```
+
+
+
+# PATTERN(字符串模式比较)
+
+> 使用`LIKE`运算符
+
+```sql
+WHERE RTRIM(title) LIKE 'Star ____'
+```
+
+
+
+`LIKE` 是 SQL 中用于在字符串比较中进行模糊匹配的操作符。它通常与 `SELECT` 语句的 `WHERE` 子句一起使用，以查找包含特定模式的文本值。`LIKE` 操作符非常有用，尤其当您需要从表中检索符合特定模式的数据时。
+
+`LIKE` 操作符使用两个通配符来匹配文本模式：
+
+1. `%`（百分号）：用于匹配任何字符序列，包括零个字符、一个字符、多个字符等。例如，`'A%'` 匹配以字母 'A' 开头的任何字符串。
+2. `_`（下划线）：用于匹配单个字符。例如，`'J_hn'` 匹配以 'J' 开头，然后是任何字符，接着是 'h'，最后是 'n' 的字符串。
+
+以下是 `LIKE` 操作符的基本语法：
+
+```sql
+SELECT column1, column2, ...
+FROM table_name
+WHERE columnN LIKE pattern;
+```
+
+- `SELECT column1, column2, ...`：要检索的列列表。
+- `FROM table_name`：要检索数据的表。
+- `WHERE columnN LIKE pattern`：`LIKE` 操作符的条件，其中 `columnN` 是要比较的列，而 `pattern` 是要匹配的文本模式。
+
+示例：
+
+假设我们有一个名为 "Employees" 的表格，包括了员工的姓名（Name）列。如果我们希望找到所有以 'John' 开头的员工姓名，可以使用 `LIKE` 操作符：
+
+```sql
+SELECT Name
+FROM Employees
+WHERE Name LIKE 'John%';
+```
+
+上述查询将返回所有以 'John' 开头的员工姓名。
+
+`LIKE` 操作符在许多情况下非常有用，例如搜索具有特定前缀或后缀的文本，查找包含特定字符序列的数据，或执行其他模糊匹配操作。要根据您的需求构建有效的模式，您可以使用 `%` 和 `_` 通配符。
+
+
+
+# 在`''`中使用`'`符号
+
+使用`\'`或者`''`实现一个`'`符号.
+
+
+
+# 比较运算符
+
+* 可以用于比较字符串,使用的是字典序比较字符串的方式
+
+
+
+## `between`运算符
+
+```sql
+WHERE length BETWEEN 116 and 120
+等同于
+WHERE length >= 116 and length <= 120
+```
+
+
+
+# `extract`提取运算符
+
+```sql
+WHERE extract(year from birthdate) .....
+```
+
+可以从一个日期类型中提取一个数字类型的year出来
+
+
+
+# `distinct`
+
+去重
+
+```sql
+select distinct movieyear from movies
+```
+
+
+
+# 数据库
+
+physical 物理存储层
+
+comceptual
+
+logical 逻辑层
+
+
+
+# view
+
+在 SQL 数据库中，**视图（View）** 是一种虚拟表，它基于一个或多个实际表（或其他视图）的查询结果而创建。视图提供了一种以某种特定方式查看数据的方法，而无需实际存储这些数据。视图的作用包括：
+
+1. **数据过滤**：视图可以用于过滤数据，只显示满足特定条件的数据行。这有助于简化数据访问，并可以隐藏不必要的数据。
+
+2. **数据转换**：视图可以用于对数据进行转换，例如合并多个表的数据，计算派生字段或进行数据格式转换。
+
+3. **数据安全性**：通过视图，可以限制用户或应用程序对数据库中的特定数据的访问，而不必向他们提供对底层表的访问权限。
+
+4. **简化查询**：视图可以将复杂的查询抽象为一个简单的视图，以便用户更轻松地检索所需的数据。
+
+5. **逻辑数据独立性**：视图提供了逻辑数据模型与底层物理数据存储之间的隔离。这意味着视图的结构可以在不影响应用程序的情况下进行更改。
+
+创建视图的语法如下：
+
+```sql
+CREATE VIEW view_name AS
+SELECT column1, column2, ...
+FROM table_name
+WHERE condition;
+```
+
+- `CREATE VIEW`：用于创建视图的关键字。
+- `view_name`：视图的名称。
+- `AS`：用于指定视图的查询定义。
+- `SELECT column1, column2, ...`：从一个或多个表中选择列以构建视图。
+- `FROM table_name`：从哪个表中选择数据。
+- `WHERE condition`：可选，用于定义过滤条件，以筛选要包括在视图中的行。
+
+示例：
+
+以下示例创建一个名为 "EmployeeNames" 的视图，该视图显示了来自 "Employees" 表的员工姓名：
+
+```sql
+CREATE VIEW EmployeeNames AS
+SELECT FirstName, LastName
+FROM Employees;
+```
+
+一旦视图创建，您可以像查询实际表一样查询视图。视图的数据是根据视图的查询定义实时生成的，它们不存储实际数据。视图提供了一种方便和安全的方式来访问和操作数据，尤其当需要简化数据访问和确保数据安全性时非常有用。
+
+
+
+* 可以使用和表一样的操作形式,**最后的结果还是操作在原来的表上**
+
+
+
+使用`DROP VIEW <view_name>`删除

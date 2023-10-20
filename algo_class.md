@@ -155,3 +155,102 @@ last in first out
 # FiFO
 
 第一个进第一个出去
+
+
+
+# 使用边的概念实现链表
+
+`next`是一个`int`类型,含义是下一个参数的在数组中的index
+
+
+
+# tree
+
+> 可以同时是父节点和子节点
+
+
+
+* 至多n-1个数地边
+* 子树不能相互连接
+* 子节点的个数可以不唯一,父节点的个数必须<=1
+* 不能跨级连边
+
+
+
+## degree
+
+以当前点的子节点作为子树的root节点的时候,字数的个数
+
+* 取决于子节点的多少
+
+
+
+## leaf node
+
+叶子节点
+
+
+
+## path
+
+从一个节点到另一个节点的路径是唯一的.
+
+
+
+## depth
+
+从root node到当前节点的需要的边的个数
+
+
+
+## height
+
+从当前节点到叶节点可以走的最长的边的个数 
+
+the length of the longest path from now node to a leaf
+
+
+
+* height of tree = height(root node) = depth(deepest node)
+
+
+
+## element
+
+有两个内容,FirstChild和NextSibling
+
+* FirstChild : 指向下一级的子节点的第一个
+* NextSibling : 指向同级的兄弟节点
+
+
+
+## tree traversal
+
+preorder : 先序遍历
+
+postorder : 后序遍历
+
+
+
+## 结论
+
+$$
+n_0 = n_2 + 1\\
+证明：\\
+n_0是没有子节点的节点个数，其他同理\\
+n = n_0 + n_1 + n_2\\
+边的个数 = n - 1\\
+2*n_2 + n_1 = n - 1\\
+代入证明成功
+$$
+
+
+
+* 你可以使用计算式子的后缀表达式构建出一个树
+
+
+
+## binary search tree
+
+* 插入的时候,如果出现空的下一个访问的节点,那么这个空的下一个节点就是我们需要插入的位置.
+* 删除的时候,

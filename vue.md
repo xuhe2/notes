@@ -786,3 +786,458 @@ defineEmits(['update:modelValue'])
 </template>
 ```
 
+
+
+## `v-model`参数
+
+默认情况下，`v-model` 在组件上都是使用 `modelValue` 作为 prop，并以 `update:modelValue` 作为对应的事件。
+
+特殊情况我们可以修改`modelValue`作为别的名字,比如
+
+```vue
+<MyComponent v-model:title="bookTitle" />
+```
+
+```vue
+<script setup>
+defineProps(['title'])
+defineEmits(['update:title'])
+</script>
+```
+
+
+
+## 在组件中使用多个`v-model`参数
+
+比如
+
+使用方式
+
+```vue
+<UserName
+  v-model:first-name="first"
+  v-model:last-name="last"
+/>
+```
+
+实现方式
+
+```vue
+<script setup>
+defineProps({
+  firstName: String,
+  lastName: String
+})
+
+defineEmits(['update:firstName', 'update:lastName'])
+</script>
+
+<template>
+  <input
+    type="text"
+    :value="firstName"
+    @input="$emit('update:firstName', $event.target.value)"
+  />
+  <input
+    type="text"
+    :value="lastName"
+    @input="$emit('update:lastName', $event.target.value)"
+  />
+</template>
+```
+
+
+
+## `v-model`修饰符
+
+比如`.trim`，`.number` 和 `.lazy`
+
+
+
+修饰符的访问可以使用
+
+```vue
+<script setup>
+const props = defineProps({
+  modelValue: String,
+  modelModifiers: { default: () => ({}) }
+})
+
+defineEmits(['update:modelValue'])
+
+console.log(props.modelModifiers) // { capitalize: true }
+</script>
+
+<template>
+  <input
+    type="text"
+    :value="modelValue"
+    @input="$emit('update:modelValue', $event.target.value)"
+  />
+</template>
+```
+
+> `modelModifiers`是用来访问修饰符的方式
+
+注意这里组件的 `modelModifiers` prop 包含了 `capitalize` 且其值为 `true`，因为它在模板中的 `v-model` 绑定 `v-model.capitalize="myText"` 上被使用了
+
+> 我们需要手动检查然后实现这个部分
+
+```vue
+<script setup>
+const props = defineProps({
+  modelValue: String,
+  modelModifiers: { default: () => ({}) }
+})
+
+const emit = defineEmits(['update:modelValue'])
+
+function emitValue(e) {
+  let value = e.target.value
+  if (props.modelModifiers.capitalize) {
+    value = value.charAt(0).toUpperCase() + value.slice(1)
+  }
+  emit('update:modelValue', value)
+}
+</script>
+
+<template>
+  <input type="text" :value="modelValue" @input="emitValue" />
+</template>
+```
+
+
+
+# 透传属性`attributes`
+
+当一个属性被传递给自己定义的组件,但是我没有在`props`,`emits`中设置这些属性参数,属性会被透传
+
+当一个组件以单个元素为根作渲染时，透传的 attribute 会自动被添加到根元素上。举例来说，假如我们有一个 `<MyButton>` 组件
+
+```vue
+<!-- <MyButton> 的模板 -->
+<button>click me</button>
+```
+
+透传的时候,会是
+
+```vue
+<MyButton class="large" />
+```
+
+我们知道父元素的属性是可以被子组件继承的
+
+所以
+
+```vue
+<button class="large">click me</button>
+```
+
+
+
+* 对于`v-on`一样有作用
+
+
+
+* 使用`defineEmits`,`defineProps`的时候,相当于是消费了参数
+
+
+
+## 禁用透传参数
+
+> 通过设置`inheritAttrs: false`来实现
+
+在 `<script setup>` 中使用 [`defineOptions`](https://cn.vuejs.org/api/sfc-script-setup.html#defineoptions)
+
+```vue
+<script setup>
+defineOptions({
+  inheritAttrs: false
+})
+// ...setup 逻辑
+</script>
+```
+
+* 透传进来的参数可以使用`$attrs`访问
+
+- 和 props 有所不同，透传 attributes 在 JavaScript 中保留了它们原始的大小写，所以像 `foo-bar` 这样的一个 attribute 需要通过 `$attrs['foo-bar']` 来访问。
+- 像 `@click` 这样的一个 `v-on` 事件监听器将在此对象下被暴露为一个函数 `$attrs.onClick`。
+
+
+
+## 多根节点透传
+
+* 需要手动的显式绑定
+
+```vue
+<header>...</header>
+<main v-bind="$attrs">...</main>
+<footer>...</footer>
+```
+
+
+
+# 插槽
+
+我们写在组件中的内容被称为`插槽内容`
+
+> 使用`<slot/>`实现插入
+
+```vue
+<template>
+  <button class="fancy-btn">
+  	<slot/> <!-- slot outlet -->
+	</button>
+</template>
+
+<style>
+.fancy-btn {
+  color: #fff;
+  background: linear-gradient(315deg, #42d392 25%, #647eff);
+  border: none;
+  padding: 5px 10px;
+  margin: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+</style>
+```
+
+
+
+* 注意,插槽的内容不局限于文本,可以是HTML
+
+```vue
+<script setup>
+import FancyButton from './FancyButton.vue'
+import AwesomeIcon from './AwesomeIcon.vue'
+</script>
+
+<template>
+  <FancyButton>
+    Click me
+ 	</FancyButton>
+  <FancyButton>
+    <span style="color:cyan">Click me! </span>
+    <AwesomeIcon />
+  </FancyButton>
+</template>
+```
+
+
+
+## 设置默认插槽
+
+如果我们想在父组件没有提供任何插槽内容时在 `<button>` 内渲染“Submit”，只需要将“Submit”写在 `<slot>` 标签之间来作为默认内容
+
+```vue
+<button type="submit">
+  <slot>
+    Submit <!-- 默认内容 -->
+  </slot>
+</button>
+```
+
+
+
+## 具名插槽
+
+如果我需要把一些内容分开来插入到里面去,给部分内容设置插槽的名字很方便
+
+```vue
+<div class="container">
+  <header>
+    <slot name="header"></slot>
+  </header>
+  <main>
+    <slot></slot>
+  </main>
+  <footer>
+    <slot name="footer"></slot>
+  </footer>
+</div>
+```
+
+> 使用`<template>`和`v-slot`配合使用
+
+```vue
+<BaseLayout>
+  <template v-slot:header>
+    <!-- header 插槽的内容放这里 -->
+  </template>
+</BaseLayout>
+```
+
+* 可以把`v-slot`简写成`#`.
+
+* 默认的`<slot>`可以写作`#default`(当然也可以不写,作为隐藏式的默认插槽)
+
+
+
+## 给插槽传递参数
+
+在某些场景下插槽的内容可能想要同时使用父组件域内和子组件域内的数据。要做到这一点，我们需要一种方法来让子组件在渲染时将一部分数据提供给插槽。
+
+```vue
+<!-- <MyComponent> 的模板 -->
+<div>
+  <slot :text="greetingMessage" :count="1"></slot>
+</div>
+```
+
+```vue
+<MyComponent v-slot="slotProps">
+  {{ slotProps.text }} {{ slotProps.count }}
+</MyComponent>
+```
+
+
+
+# 依赖注入
+
+当我们需要给一个组件的**深层子组件**传递内容的时候,我们依赖**透传参数**,但是,着可能造成不必要的组件也获得了参数
+
+
+
+## 使用`provide`和`inject`
+
+```js
+import { ref, provide } from 'vue'
+
+const count = ref(0)
+provide('key', count)
+```
+
+```js
+<script setup>
+import { inject } from 'vue'
+
+const message = inject('message')
+</script>
+```
+
+
+
+* 使用`工厂函数`
+
+在一些场景中，默认值可能需要通过调用一个函数或初始化一个类来取得。为了避免在用不到默认值的情况下进行不必要的计算或产生副作用，我们可以使用工厂函数来创建默认值：
+
+```js
+const value = inject('key', () => new ExpensiveClass(), true)
+```
+
+
+
+## 一次传入多个
+
+```js
+<!-- 在供给方组件内 -->
+<script setup>
+import { provide, ref } from 'vue'
+
+const location = ref('North Pole')
+
+function updateLocation() {
+  location.value = 'South Pole'
+}
+
+provide('location', {
+  location,
+  updateLocation
+})
+</script>
+```
+
+```js
+<!-- 在注入方组件 -->
+<script setup>
+import { inject } from 'vue'
+
+const { location, updateLocation } = inject('location')
+</script>
+
+<template>
+  <button @click="updateLocation">{{ location }}</button>
+</template>
+```
+
+
+
+## 被注入的值确保`read-only`
+
+```js
+<script setup>
+import { ref, provide, readonly } from 'vue'
+
+const count = ref(0)
+provide('read-only-count', readonly(count))
+</script>
+```
+
+
+
+## 使用`symbol`
+
+至此，我们已经了解了如何使用字符串作为注入名。但如果你正在构建大型的应用，包含非常多的依赖提供，或者你正在编写提供给其他开发者使用的组件库，建议最好使用 Symbol 来作为注入名以避免潜在的冲突。
+
+我们通常推荐在一个单独的文件中导出这些注入名 Symbol：
+
+
+
+```js
+// keys.js
+export const myInjectionKey = Symbol()
+```
+
+
+
+```js
+// 在供给方组件中
+import { provide } from 'vue'
+import { myInjectionKey } from './keys.js'
+
+provide(myInjectionKey, { /*
+  要提供的数据
+*/ });
+```
+
+
+
+```js
+// 注入方组件
+import { inject } from 'vue'
+import { myInjectionKey } from './keys.js'
+
+const injected = inject(myInjectionKey)
+```
+
+
+
+# 接受响应式的状态
+
+```js
+// fetch.js
+import { ref } from 'vue'
+
+export function useFetch(url) {
+  const data = ref(null)
+  const error = ref(null)
+
+  fetch(url)
+    .then((res) => res.json())
+    .then((json) => (data.value = json))
+    .catch((err) => (error.value = err))
+
+  return { data, error }
+}
+```
+
+```js
+const url = ref('/initial-url')
+
+const { data, error } = useFetch(url)
+
+// 这将会重新触发 fetch
+url.value = '/new-url'
+```
+
