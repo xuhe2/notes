@@ -472,3 +472,366 @@ A 0
 # 矩阵的秩
 
 当矩阵是n*n的时候,`n*`的矩阵叫做`n阶子式`.
+
+
+
+# 向量空间 vector space
+
+$$
+R^n代表n维度的向量空间\\
+使用竖着的表示
+$$
+
+
+
+一个向量空间中,不同的元素相加之后依旧在空间中,不同的元素乘以常数也是在当前的向量空间中的.**封闭性**
+
+* 书本P131
+
+ 
+
+## 验证一个矩阵是向量空间
+
+1. 验证是非空子集
+2. 验证满足数乘的封闭性
+3. 验证满足加法的封闭性.
+
+
+
+## 命名
+
+{0} zero subspace
+
+`{0} , V`是travial subspace 
+
+除了上述两个,其他叫做`proper space`
+
+
+
+# null space
+
+存在使得`Ax=0`的部分
+$$
+N(A) = 0\\
+Ax = 0的解
+$$
+
+* 可以使用矩阵的积表示
+
+
+
+# span
+
+Let v1, v2, ... , vn be vectors in a vector space V. A sum of the form α1v1 + α2v2 +···+ αnvn, where α1, ... , αn are scalars, is called a linear combination of v1, v2, ... , vn. The set of all linear combinations of v1, v2, ... , vn is called the span of v1, ... , vn. The span of v1, ... , vn will be denoted by Span(v1, ... , vn).
+
+> 让 v1、v2、...、vn 代表向量空间 V 中的向量。一个以 α1v1 + α2v2 +···+ αnvn 形式的和，其中 α1、...、αn 是标量，被称为 v1、v2、...、vn 的线性组合。所有 v1、v2、...、vn 的线性组合构成的集合被称为 v1、v2、...、vn 的张成（span）。v1、v2、...、vn 的张成通常用 Span(v1, v2, ... , vn) 表示。这表示了所有可能的线性组合，其中标量可以是任意实数，它们组成了一个向量空间，该向量空间被称为 v1、v2、...、vn 的张成。
+
+
+
+## spanning space
+
+The set {v1, ... , vn} is a spanning set for V if and only if every vector in V can be written as a linear combination of v1, v2, ... , vn
+
+> 这个向量空间的任何元素可以由这个
+> $$
+> α_1v_1 + α_2v_2 +···+ α_nv_n
+> $$
+> 生成出来,那么这个span叫做spanning space
+
+
+
+* 如果**e1,e2,e3**可以使用**span**中的元素表示出来,那么就是
+
+
+
+## 线性空间的结论
+
+* 如果
+  $$
+  v_1,v_2,v_3....在向量空间中\\
+  并且span(...)=V,其中的一个v_?可以使用其他元素表示\\
+  那么可以使用这n-1个部分的span生成整个向量空间
+  $$
+  
+* $$
+  其中一个向量可以表示成别的n-1个向量的组合\\
+  那么存在c_1v_1+c_2v_2+...c_nv_n=0\\
+  并且c_1,c_2...的部分不全为0
+  $$
+
+
+
+# 线性无关
+
+The vectors v1, v2, ... , vn in a vector space V are said to be **linearly independent(线性无关)** if
+$$
+c_1v_1+c_2v_2...+c_nv_n=0
+$$
+那么这些`c1,c2...`必须全部是0
+
+相反,
+
+就是**linear dependent(线性相关)**.
+
+
+
+## 结论
+
+ Let x1, x2, ... , xn be n vectors in Rn and let X = (x1, ... , xn). The vectors x1, x2, ... , xn will be linearly dependent if and only if X is singular
+
+
+
+# Basis(最小生成集)
+
+需要满足
+
+1. v1,v2,v3...vn是线性无关的  **使用Ax=0或者行列式!=0**
+2. v1,v2,...vn是生成集  **使用e1,e2,e3验证**
+
+* 加上或减去任何一个元素,都不再是basis
+* 删除一个元素之后就不是生成集了
+
+
+
+## 结论1
+
+$$
+ If~{v_1, v_2, ... , v_n}~is~a~spanning~set~for~a~vector~space~V,\\ then~any~collection~of~m~vectors~in~V,~where~m > n,~is~linearly~dependent
+$$
+
+
+
+## 扩展结论1
+
+> 当两个空间都是basis的时候,那么这两个空间的大小相同
+
+
+
+* 其他结论通过书本 P160 看
+
+
+
+# Changing Coordinates(改变表示方式,使用其他basis)
+
+transition matrix : 转换矩阵
+
+
+
+## 把其他basis改成e1,e2表示
+
+$$
+x = Uc
+$$
+
+U 是转换矩阵,把使用其他basis表示改成用e1,e2表示
+$$
+U = (u_1,u_2,...u_n)
+$$
+
+
+
+
+## 把用e1,e2表示的改成其他basis表示
+
+乘上 U的逆矩阵
+$$
+c = U^{-1}x
+$$
+
+
+## 用v1,v2的表示换成u1,u2表示
+
+$$
+转换矩阵是~U^{-1}V
+$$
+
+
+
+# 扩展到其他维度
+
+coordinate vector : 坐标向量
+
+
+
+## 在**I**下的坐标
+
+**I**是单位矩阵,所以,可以坐标写成
+$$
+[x]_I
+$$
+
+
+## 结论
+
+$$
+V[x]_V = U[x]_u\\
+把V表示的转换为U表示\\
+[x]_V = V^{-1}U[x]_U
+$$
+
+---
+
+
+
+# 行空间,列空间
+
+书本P174
+
+> 如果 A 是一个 m × n 的矩阵，那么由 A 的行向量张成的 R1×n 空间被称为 A 的行空间。由 A 的列向量张成的 Rm 空间被称为 A 的列空间。
+>
+> 简而言之，A 的行空间包括了矩阵 A 的所有行向量张成的空间，而 A 的列空间包括了矩阵 A 的所有列向量张成的空间。这两个空间在线性代数中具有重要的性质和应用，它们帮助我们理解矩阵的结构和性质。
+
+
+
+## 结论1
+
+Two row equivalent matrices have the same row space
+
+> 两个行等价的矩阵由一样的行空间
+>
+> > 行等价代表可以通过三个变换之后得到一样的值
+
+
+
+# 矩阵秩(the rank of matrix)
+
+The rank of a matrix A, denoted rank(A), is the dimension of the row space of A
+
+> 就是basis的元素个数,就是线性空间可以张成的空间的维度
+
+
+
+1. 使用**三个行变换**把式子变成**row echelon form**(三角形,前面位0的式子).
+2. 求的非0行的个数.
+
+
+
+## 求解basis of row space of A
+
+1. 化成row echelon form的形式
+2. 找**有非0前导元素存在的那一行**作为basis的一部分
+
+
+
+## 结论1
+
+A linear system Ax = b is consistent if and only if b is in the column space of A
+
+
+
+一个线性方程组 Ax = b 是相容的，当且仅当向量 b 存在于矩阵 A 的列空间中。
+
+
+
+## 如何求解basis of column of A
+
+* 我们知道在求basis of row space of A的时候,我们需要把**有非零前导元素所在的那行**作为basis的一部分.(所以,别乱换行的前后顺序)
+
+
+
+> 1. 化成row echelon form的形式
+> 2. 找**有非0前导元素存在的那一列**作为basis的一部分
+
+
+
+# 线性变换(linear transformation)
+
+ A mapping L from a vector space V into a vector space W is said to be a linear transformation if
+$$
+L (αv_1 + βv_2) = αL (v_1) + βL (v_2)
+$$
+
+> 以上是同维度的线性变换
+
+
+
+* 线性变换可以是同纬度的,也可以是不同维度的线性变换.
+
+* 注意,都是在向量空间中操作的
+
+
+
+## 证明
+
+1. 先证明
+
+$$
+L(\alpha x) = \alpha L(x)
+$$
+
+2. 再证明
+
+$$
+L(x,y) = L(x) + L(y)
+$$
+
+
+
+## 结论
+
+$$
+所有从R^n到R^m的线性变换都存在一个矩阵使得可以转化过去
+$$
+
+
+
+
+
+1. 如果 L 是一个线性变换，将向量空间 V 映射到向量空间 W，那么对于 V 的零向量 0V 和 W 的零向量 0W，L 对这两个零向量的映射结果是相同的，都等于 W 的零向量，即 L(0V) = 0W。
+
+2. 线性变换 L 具有加法和标量乘法的性质，即对于 V 中的任意向量 v1, v2, ..., vn，以及任意标量 α1, α2, ..., αn，L 对它们的线性组合的映射等于相应线性组合的映射，即 L(α1v1 + α2v2 + ... + αnvn) = α1L(v1) + α2L(v2) + ... + αnL(vn)。
+
+3. 对于任何 V 中的向量 v，L 对其取负的映射结果等于取负后再映射的结果，即 L(-v) = -L(v)。这表示线性变换对向量的反向操作等于取负后再映射。
+
+这些性质表明线性变换在保持线性关系方面非常重要。线性变换将向量的线性组合映射到对应线性组合的结果，同时保持零向量不变，以及负向量的映射等于取负后再映射。这些性质有助于我们理解线性代数和向量空间中的重要概念。
+
+
+
+# 核(kernel)
+
+**核（Kernel）**：在线性代数中，核是线性变换中的一个概念。对于线性变换L: V → W，它的核ker(L)是定义在向量空间V上的子集。核包含所有使线性变换L(v)等于零向量0W（W中的零向量）的向量v。数学上表示为：
+
+ker(L) = {v ∈ V | L(v) = 0W }
+
+
+
+# 像(image)
+
+**像（Image）**：对于线性变换L: V → W，它的像L(S)是定义在向量空间W上的子集。像是线性变换L应用于子空间S中所有向量所得到的结果的集合。数学上表示为：
+
+L(S) = {w ∈ W | w = L(v) for some v ∈ S}
+
+这意味着像包含了所有在S中的向量经过L映射后得到的W中的向量。
+
+
+
+# 线性变换的矩阵表示
+
+$$
+L_A(x) = Ax
+$$
+
+
+
+## 计算矩阵表示
+
+1. 计算矩阵A
+
+$$
+A_1 = L(e_1)\\
+有通解A_n = L(e_n)\\
+A = (A_1,A_2,....A_n)
+$$
+
+
+
+## 使用符号表示
+
+$$
+[L(v)]_F = Ax
+$$
+
+
+$$
+[x]_E的意思是x在E作为basis表示下的矩阵
+$$

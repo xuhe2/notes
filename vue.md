@@ -1241,3 +1241,41 @@ const { data, error } = useFetch(url)
 url.value = '/new-url'
 ```
 
+
+
+# 自定义指令
+
+在 `<script setup>` 中，任何以 `v` 开头的驼峰式命名的变量都可以被用作一个自定义指令。在下面的例子中，`vFocus` 即可以在模板中以 `v-focus` 的形式使用。
+
+```js
+<script setup>
+// 在模板中启用 v-focus
+const vFocus = {
+  mounted: (el) => el.focus()
+}
+</script>
+
+<template>
+  <input v-focus />
+</template>
+```
+
+
+
+## 实现
+
+```js
+<div v-demo="{ color: 'white', text: 'hello!' }"></div>
+```
+
+```js
+app.directive('demo', (el, binding) => {
+  console.log(binding.value.color) // => "white"
+  console.log(binding.value.text) // => "hello!"
+})
+```
+
+
+
+# VUE项目实战
+

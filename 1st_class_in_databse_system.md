@@ -886,3 +886,301 @@ FROM Employees;
 
 
 使用`DROP VIEW <view_name>`删除
+
+
+
+# 第二次实验
+
+* delete的时候不需要*
+
+
+
+## 修改列名
+
+在 SQL 查询中，您可以使用别名（Alias）来为一个列指定一个不同的名称，而不必更改实际表的列名。这对于在查询结果中更改列名非常有用，以便提供更具描述性的输出。您可以在 `SELECT` 语句中为列添加别名。
+
+以下是如何在查询中为一个列添加别名的示例：
+
+```sql
+SELECT column_name AS alias_name
+FROM table_name;
+```
+
+- `column_name`：要添加别名的列的实际名称。
+- `alias_name`：您希望将列的别名设置为的名称。
+
+示例：
+
+假设有一个名为 "Students" 的表格，包括 "StudentID" 和 "FullName" 列，但您想在查询结果中将 "FullName" 列更改为 "StudentName"，可以这样做：
+
+```sql
+SELECT StudentID, FullName AS StudentName
+FROM Students;
+```
+
+在查询结果中，"FullName" 列将显示为 "StudentName"，这是通过别名的方式实现的。这对于在查询结果中提供更清晰的列名称非常有用。
+
+
+
+## 添加新的列名
+
+要在 SQL 查询中添加一个新的列，您可以使用 `ALTER TABLE` 语句。这是一个示例 SQL 查询，说明如何添加一个新的列到现有表：
+
+```sql
+ALTER TABLE table_name
+ADD new_column_name data_type;
+```
+
+在这个查询中：
+
+- `table_name` 是您要添加新列的表的名称。
+- `new_column_name` 是您要添加的新列的名称。
+- `data_type` 是新列的数据类型，例如 `INT`（整数）、`VARCHAR(50)`（字符串，最大长度为 50 个字符）等。
+
+示例：
+
+假设您有一个名为 "Employees" 的表格，现在希望添加一个新的列 "Salary"，您可以执行以下 SQL 查询：
+
+```sql
+ALTER TABLE Employees
+ADD Salary INT;
+```
+
+上述查询将在 "Employees" 表中添加一个名为 "Salary" 的整数列。新列将不包含任何数据，它只是一个新的列，您可以在后续查询中插入或更新数据。
+
+请注意，您可以根据您的需求选择不同的数据类型和约束来定义新的列。数据库系统会根据定义的数据类型为新列分配合适的内存空间。
+
+
+
+
+
+```sql
+SELECT title,year,duration,'hrs' AS inhours
+FROM(SELECT title,year,length/60 AS duration FROM movies)
+```
+
+> 是否**参数** AS **new coloumn name**的方式
+
+
+
+
+
+## 查找date类型的值
+
+在 PostgreSQL（pgsql）中，您可以使用类似的 SQL 查询来查找出生日期在七月的电影明星的姓名和出生日期。以下是 PostgreSQL 中的查询示例：
+
+```sql
+SELECT name, birthdate
+FROM movie_stars
+WHERE EXTRACT(MONTH FROM birthdate) = 7;
+```
+
+这个查询在 `movie_stars` 表中选择出生日期在七月的电影明星的姓名和出生日期。在 PostgreSQL 中，我们使用 `EXTRACT` 函数来提取日期的月份部分，并将其与 7 进行比较，以确定出生日期是否在七月。
+
+确保表名和列名与您的数据库架构相匹配，以确保查询能够正确执行。
+
+
+
+## 使用通配符
+
+您可以使用 `LIKE` 操作符在 SQL 查询中进行模糊搜索，以查找与指定模式匹配的文本。`LIKE` 允许您在查询中使用通配符，如 `%` 和 `_`。
+
+下面是如何使用 `LIKE` 来执行模糊搜索：
+
+```sql
+SELECT column_name
+FROM table_name
+WHERE column_name LIKE pattern;
+```
+
+- `column_name` 是您希望进行模糊搜索的列名。
+- `table_name` 是包含该列的表名。
+- `pattern` 是您希望匹配的模式。可以包含通配符。
+
+通配符：
+
+- `%`：匹配任意数量的字符（包括零个字符）。例如，`'a%'` 匹配以 'a' 开头的任何文本。
+- `_`：匹配单个字符。例如，`'_pple'` 匹配任何以 'a' 开头，接着是一个字符，然后是 'pple' 的文本。
+
+示例：
+
+假设您有一个名为 "movies" 的表格，其中包括 "title" 列，您可以使用 `LIKE` 进行模糊搜索，查找包含特定文本的电影：
+
+```sql
+SELECT title
+FROM movies
+WHERE title LIKE '%Star%';
+```
+
+上述查询将返回包含 "Star" 的电影标题，无论 "Star" 在文本中的位置如何。
+
+
+
+* 注意,通配符出现`'`的时候,需要使用两个`'`代表一个符号
+
+```sql
+SELECT * FROM movies
+WHERE title LIKE '%''s%'
+```
+
+
+
+## 创建视图
+
+在 SQL 中，您可以使用 `CREATE VIEW` 语句创建视图（View）。视图是虚拟的表，它是从一个或多个表中选择的行和列的查询结果，它本身并不存储数据，而只是一个可用于查询和报告的命名查询。以下是创建视图的一般语法：
+
+```sql
+CREATE VIEW view_name AS
+SELECT column1, column2, ...
+FROM table_name
+WHERE condition;
+```
+
+- `view_name` 是您要创建的视图的名称。
+- `column1, column2, ...` 是您要包括在视图中的列。
+- `table_name` 是从中选择数据的表格。
+- `condition`（可选）是用于筛选行的条件。
+
+示例：
+
+假设您有一个名为 "employees" 的表格，包括 "employee_id"、"first_name"、"last_name" 和 "salary" 列，您可以创建一个名为 "employee_view" 的视图，该视图只包括 "employee_id"、"first_name" 和 "salary" 列，如下所示：
+
+```sql
+CREATE VIEW employee_view AS
+SELECT employee_id, first_name, salary
+FROM employees;
+```
+
+此时，您已经创建了一个名为 "employee_view" 的视图，该视图包含了您在 `SELECT` 语句中指定的列。您可以像查询表一样查询视图，并从其中检索数据。
+
+请注意，视图只是一个虚拟表，它基于基础表的数据。如果基础表中的数据发生更改，视图也会反映这些变化。视图通常用于简化复杂查询、限制对敏感数据的访问以及创建可重复使用的查询。
+
+
+
+# aggregate function
+
+* avg
+
+> 会忽视null
+
+```sql
+select avg(networth)
+from table
+```
+
+
+
+* total
+* min
+* max
+
+> 也可以用在字符串(使用字典序),日期上
+
+* count
+
+> 统计有几个数值
+
+
+
+tips
+
+> 以上都会忽略null
+>
+> count可以使用*,其他是对准确的值操作
+>
+> 在一个值都没有的时候,count返回0,其他的返回null
+>
+> 可以对组聚类之后的数据操作.
+>
+> `trunc`取整
+
+---
+
+
+
+# order
+
+> 排序使用(默认使用**升序**)
+
+* 可以使用多个值来排序,有重要程度区分
+
+```sql
+select title 
+from movies
+where year<2000
+order by studioname ,producerC desc
+```
+
+* 注意,这个desc只能作用于一个上面
+
+* 可以对表上的原来的数据操作,也可以对组的数据操作.
+
+
+
+# group by
+
+```sql
+select ...
+from ..
+where ..
+group by ..
+```
+
+* 可以使用多个值来分组,只有当这些值都满足的时候,才是同一组.
+
+
+
+> 因为一次分组,一组可以有多个值,所以,我们不能直接使用`select <原来的列名>`获取内容,需要使用`aggregate function`获取只有一个.
+
+```sql
+select studioname,count(*)
+from table
+group by studioname
+```
+
+> 使用名字分组,`count(*)`代表一组有几个数据
+
+
+
+* 可以使用`order by`排序,需要放在后面.
+
+* null被认为是同一个值,group value是正常的行数,但是计算单一个列的值的时候,会忽略null
+
+
+
+# having
+
+* `where`是对原来数据的内容做处理的,`having`是对分组之后的组做处理
+* 不同的DBMS对having是否能在正常查询中使用不一样
+
+`WHERE` 和 `HAVING` 是 SQL 中的两个关键字，它们都用于筛选数据。它们之间的区别在于：
+
+- `WHERE` 关键字用于筛选行，而 `HAVING` 关键字用于筛选分组后的结果集。
+- `WHERE` 关键字在 `GROUP BY` 分组和聚合函数之前执行，而 `HAVING` 关键字在 `GROUP BY` 分组和聚合函数之后执行。
+- `WHERE` 关键字支持所有字段和运算符，而 `HAVING` 关键字主要支持组函数和运算符。
+
+例如，假设我们有一个名为 `employees` 的表，其中包含员工的姓名、部门和薪水。如果我们想要找到薪水大于 5000 的员工，我们可以使用以下 SQL 查询：
+
+```sql
+SELECT * FROM employees WHERE salary > 5000;
+```
+
+如果我们想要找到每个部门的平均薪水大于 5000 的部门，我们可以使用以下 SQL 查询：
+
+```sql
+SELECT department, AVG(salary) FROM employees GROUP BY department HAVING AVG(salary) > 5000;
+```
+
+
+
+# 不等于
+
+```sql
+<>
+```
+
+
+
+# 第三次实验
+
+使用`NOW()`获得现在的时间
