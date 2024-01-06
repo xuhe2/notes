@@ -835,3 +835,607 @@ $$
 $$
 [x]_E的意思是x在E作为basis表示下的矩阵
 $$
+
+
+
+# 相似度(similarity)
+
+$$
+C = B^{-1}*A*U\\
+$$
+
+
+
+## 结论
+
+(i) 矩阵 B 表示线性变换 L 关于基 {u1, u2} 的矩阵表示。
+
+(ii) 矩阵 A 表示线性变换 L 关于基 {e1, e2} 的矩阵表示。
+
+(iii) 矩阵 U 表示从基 {u1, u2} 到基 {e1, e2} 的基变换的过渡矩阵。
+
+
+
+Let E = {v1, ... , vn} and F = {w1, ... , wn} be two ordered bases for a vector space V, and let L be a linear operator on V. Let S be the transition matrix representing the change from F to E. If A is the matrix representing L with respect to E, and B is the matrix representing L with respect to F, then 
+$$
+B = S^{−1}*A*S.
+$$
+
+
+* A和A是相似的
+
+* A和B是相似的,B和A就是相似的
+
+* A和B相似,B和C相似,A和C相似.
+
+* A和B是相似的,det(A)=det(B)
+
+* $$
+  A^T~和~B^T相似
+  $$
+
+* 乘以相同的常数k,依旧是相似的.
+
+
+
+# 伴随矩阵
+
+2*2矩阵的伴随矩阵的计算
+
+对角线元素互换
+
+负对角线的元素乘以-1
+
+
+
+# Orthogonality(正交性)
+
+
+
+## Scalar Product
+
+$$
+if~x~=~(x_1, ... , x_n)^T\\
+and~y = (y_1, ... , y_n)^T \\
+,then~
+x^T y = x_1y_1 + x_2y_2 +···+ x_ny_n
+$$
+
+
+
+* $$
+  x^Ty = ||x||~||y||~\cos\theta
+  $$
+
+* 
+
+
+
+### 求一个向量的模(norm)
+
+$$
+||x|| = \sqrt{x^Tx}
+$$
+
+
+
+
+
+### 计算两个向量之间的距离
+
+the distance between x and y is **||x-y||**
+
+
+
+## 正交的
+
+The vectors x and y in R2 (or R3) are said to be **orthogonal** if 
+$$
+x^Ty = 0
+$$
+
+* 0向量是特殊的正交的向量
+
+
+
+## scalar projection
+
+一个向量在另一个向量上的投影
+
+
+
+## 结论
+
+1. N(A)和A转置的列向量是正交的
+
+
+
+## 正交的子空间
+
+ Two subspaces X and Y of Rn are said to be orthogonal if xT y = 0 for every x ∈ X and every y ∈ Y. If X and Y are orthogonal, we write X ⊥ Y.
+
+
+
+## 正交补集
+
+Y的正交补集是所有和Y正交的向量构成的集合
+
+
+
+## range of matrix A(矩阵A的范围)
+
+$$
+R(A) = \{
+y ∈ R^n | y = A x~for~some~x ∈ R^m\}
+$$
+
+
+
+* $$
+  R(A^T)和N(A)是正交的
+  $$
+
+* 
+
+
+
+# 题目
+
+* 0向量没有basis
+
+
+
+* 计算R(A)的时候,可以进行行变换.
+
+
+
+# least square problem
+
+一个m*n的矩阵,有n的rank
+$$
+最小方差解 = (A^T A)^{-1}A^T b
+$$
+
+
+
+
+# 内积
+
+书本P254
+
+
+
+norm of 矩阵A = A的内积的开根号
+
+* 正交的矩阵内积是0
+
+
+
+scalar multiple: 标量倍数
+
+
+$$
+a = \frac{<u,v>}{||v||} 标量投影
+$$
+
+
+# 正交集合(orthogonal set)
+
+Let v1, v2, ... , vn be nonzero vectors in an inner product space V. If  vi, vj = 0 whenever i = j, then {v1, v2, ... , vn} is said to be an orthogonal set of vectors.
+
+> 令 v1, v2, ... , vn 为内积空间 V 中的非零向量。如果每当 i = j 时 vi, vj = 0，则 {v1, v2, ... , vn} 被称为正交集 向量。
+
+* 注意,当两个被内积的矩阵是一样的时候,才不是0
+
+
+
+# 正交标准集合(orthonomal set)
+
+An orthonormal set of vectors is an orthogonal set of unit vectors.
+
+> 正交向量集是单位向量的正交集。
+
+
+
+## 使用标准正交基快速解答
+
+[标准正交基可以快速求出一个向量在该空间的坐标。因为标准正交基的基向量两两正交，所以一个向量在标准正交基下的坐标就是它在每个基向量上的投影长度](https://bing.com/search?q=标准正交基)[1](https://bing.com/search?q=标准正交基)[。这样，我们就可以通过计算向量在每个基向量上的投影长度来求出向量在该空间的坐标，从而快速求出向量在该空间的任意线性组合的坐标](https://bing.com/search?q=标准正交基)[1](https://bing.com/search?q=标准正交基)。
+
+
+
+[这个式子的意思是，如果{u1, u2, … , un}是内积空间V的一个标准正交基，且v是V中的一个向量，那么v在每个基向量上的投影长度就是v在该基向量上的坐标，即ci = v, ui。这个公式可以用来计算向量在标准正交基下的坐标，从而快速求出向量在该空间的任意线性组合的坐标](https://math.stackexchange.com/questions/2434528/let-v-1-v-2-v-n-be-a-basis-for-an-inner-product-space-v-show-that-th)[1](https://math.stackexchange.com/questions/2434528/let-v-1-v-2-v-n-be-a-basis-for-an-inner-product-space-v-show-that-th)。
+
+
+
+* 注意,当**ai*aj(i==j)**的时候,
+
+
+
+# 正交矩阵
+
+An n × n matrix Q is said to be an orthogonal matrix if the column vectors of Q form an orthonormal set in Rn.
+
+> [如果一个n x n的矩阵Q的列向量在Rn中构成一个标准正交基，那么矩阵Q被称为正交矩阵](https://en.wikipedia.org/wiki/Orthogonal_matrix)[1](https://en.wikipedia.org/wiki/Orthogonal_matrix)[2](https://ocw.mit.edu/courses/res-18-011-algebra-i-student-notes-fall-2021/mit18_701f21_lect12.pdf)。
+
+
+
+*  An n × n matrix Q is orthogonal if and only if Q^T*Q = I.
+
+
+
+## 结论
+
+书本P268
+
+
+
+补充: 
+
+1. $$
+   det(Q) = det(Q^{-1})=-1或者1
+   $$
+
+2. 正交矩阵的转置也是正交矩阵
+
+3. 2个正交矩阵的乘积也是正交矩阵
+
+4. $$
+   <Qx,Qx> = <x,x>
+   $$
+
+
+
+# the Gram–Schmidt Orthogonalization Process
+
+1. 选取一个开始的方向,变成开始的单位向量
+2. 后面的单位向量去掉在其他方法上的分量,得到新的垂直分量
+
+
+
+# 使用线代
+
+当一个状态到下一个状态可以由当前状态的值构成的时候,可以使用矩阵表示.
+
+
+
+# 特征向量(eigenvector)
+
+特征向量是指在矩阵变换下，仅发生缩放变换而不改变方向的非零向量。更具体地说，如果一个矩阵A有一个特征值λ，那么存在一个**非零向量x**，使得Ax=λx。这个向量x就是A的特征向量。特征向量在许多领域中都有广泛的应用，例如物理学、计算机科学和工程学。特征向量可以帮助我们理解矩阵的性质，例如矩阵的对角化和矩阵的行列式。如果您需要更多关于特征向量的信息，请告诉我。
+
+
+
+## 结论
+
+$$
+A(ax) = Aax = \lambda (ax)\\
+x_1,x_2是特征矩阵,那么x_1+x_2也是
+$$
+
+
+
+## 求解特征矩阵的集合
+
+$$
+(A − λI)x = 0\\
+N(A - \lambda I)就是结果
+$$
+
+
+
+## 计算特征向量的步骤
+
+1. 使用`det(A − λI)=0`求出特征值
+2. 然后求特征矩阵
+
+> 如果有自由未知量,把一个式子变成多个,例如,书本P309
+
+
+
+## 结论
+
+$$
+\sum^{n}_{i=1} \lambda _i = \sum^{n}_{i=1}a_{ii}\\
+所有\lambda的乘积等于det(A)
+$$
+
+
+
+A is nonsingular , 特征值都非0
+
+反之,则存在0.
+
+
+$$
+\lambda^{-1}也是A^{-1}的特征值
+$$
+
+$$
+\lambda^m也是A^m的特诊值
+$$
+
+
+* 如果特征值都是不相同的,那么特征向量也是线性无关的.
+
+> [如果一个矩阵A具有k个不同的特征值λ1，λ2，…，λk，对应的特征向量为x1，x2，…，xk，则特征向量集{x1，x2，…，xk}是线性无关的](https://math.stackexchange.com/questions/29371/how-to-prove-that-eigenvectors-from-different-eigenvalues-are-linearly-independe)[1](https://math.stackexchange.com/questions/29371/how-to-prove-that-eigenvectors-from-different-eigenvalues-are-linearly-independe)[2](https://math.stackexchange.com/questions/1407353/distinct-eigenvalues-and-linearly-independent-eigenvectors)[3](https://www.statlect.com/matrix-algebra/linear-independence-of-eigenvectors)。
+
+
+
+# 对角化(diagonalizable)
+
+对角化的矩阵X由x1,x2,x3...xn构成,x1,x2...xn来自特征向量空间
+
+
+
+defective : 不可对角化的
+
+
+
+
+
+# Hermitian Matrices
+
+$$
+ A~matrix~M~is~said~to~be~Hermitian~if~M = M^H.
+$$
+
+
+
+
+
+## 共轭
+
+[共轭复数是指两个实部相等，虚部互为相反数的复数互为共轭复数 ](https://www.zhihu.com/topic/20330050/intro)[1](https://www.zhihu.com/topic/20330050/intro)[。例如，对于一个复数z=a+bi，它的共轭复数记作zˊ=a-bi ](https://www.zhihu.com/topic/20330050/intro)[1](https://www.zhihu.com/topic/20330050/intro)[。共轭复数的实部等于原复数的实部，而虚部则是原复数虚部的相反数 ](https://www.zhihu.com/topic/20330050/intro)[2](https://baike.baidu.com/item/共轭复数/2486343)[。共轭复数在复数的除法、模长、幂等式等方面有着重要的应用 ](https://www.zhihu.com/topic/20330050/intro)[1](https://www.zhihu.com/topic/20330050/intro)。
+
+
+
+### 对矩阵的共轭
+
+> 对矩阵的每一个值都取共轭.
+
+
+
+## Complex Inner Products
+
+$$
+定义\bar z^T = z^H~and~||z|| = (z^Hz)^{1/2}
+$$
+
+
+
+### 结论
+
+![image-20231212134930845](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20231212134930845.png)
+
+
+
+## unitary matrix
+
+一个×n×n矩阵U是**酉矩阵（unitary matrix）**，当且仅当它的列向量在Cn[中构成一个**标准正交基（orthonormal basis）**](https://en.wikipedia.org/wiki/Unitary_matrix)[1](https://en.wikipedia.org/wiki/Unitary_matrix)。这意味着，对于任意的i和j，U的第i列第j行的元素等于U的第j列第i[行的元素的复共轭](https://en.wikipedia.org/wiki/Unitary_matrix)[1](https://en.wikipedia.org/wiki/Unitary_matrix)[。酉矩阵也称为**幺正矩阵（unitary operator）**](https://en.wikipedia.org/wiki/Unitary_matrix)[1](https://en.wikipedia.org/wiki/Unitary_matrix)[。酉矩阵具有许多重要的性质，例如它们保持向量的长度不变，即它们是**保范的（norm-preserving）**](https://en.wikipedia.org/wiki/Unitary_matrix)[1](https://en.wikipedia.org/wiki/Unitary_matrix)[。酉矩阵在量子力学中非常重要，因为它们描述了具有必须为实数的特征值的算子](https://en.wikipedia.org/wiki/Unitary_matrix)[1](https://en.wikipedia.org/wiki/Unitary_matrix)[。在信号处理中，酉矩阵用于傅里叶分析和信号表示](https://en.wikipedia.org/wiki/Unitary_matrix)[1](https://en.wikipedia.org/wiki/Unitary_matrix)[。酉矩阵的特征值和特征向量在分析信号和提取有意义的信息方面起着至关重要的作用](https://en.wikipedia.org/wiki/Unitary_matrix)[1](https://en.wikipedia.org/wiki/Unitary_matrix)[。酉矩阵在线性代数和数值分析中得到了广泛的研究。它们具有明确定义的谱特性，许多数值算法（例如Lanczos算法）利用这些特性进行高效的计算](https://en.wikipedia.org/wiki/Unitary_matrix)[1](https://en.wikipedia.org/wiki/Unitary_matrix)[。酉矩阵还出现在奇异值分解（SVD）和特征值分解等技术中。](https://en.wikipedia.org/wiki/Unitary_matrix)[1](https://en.wikipedia.org/wiki/Unitary_matrix)
+
+
+
+* 标准正交基,同时也是Hermitian Matrices
+
+* 可能需要施密特正交化.
+
+
+
+#  Quadratic Forms(二次形式)
+
+
+
+
+
+## 结论
+
+这是一个关于二次型的定义。在这里，我们有一个二次型()=f(x)=xTAx，其中A是一个×n×n的矩阵。如果对于所有的非零向量∈x∈Rn，二次型()f(x)只取一个符号，则称()f(x)是**定符号的（definite）**。如果对于所有的非零向量∈x∈Rn，二次型()f(x)都大于零，则称()f(x)是**正定的（positive definite）**。如果对于所有的非零向量∈x∈Rn，二次型()f(x)都小于零，则称()f(x)是**负定的（negative definite）**。如果二次型()f(x)取不同符号的值，则称()f(x)是**不定符号的（indefinite）**。如果()≥0f(x)≥0，并且存在一个非零向量≠0x\\=0，使得()=0f(x)=0，则称()f(x)是**正半定的（positive semidefinite）**。如果()≤0f(x)≤0，并且存在一个非零向量≠0x\\=0，使得()=0f(x)=0，则称()f(x)[是**负半定的（negative semidefinite）**。](https://en.wikipedia.org/wiki/Quadratic_form)[1](https://en.wikipedia.org/wiki/Quadratic_form)
+
+
+
+* 可以通过**特征值**判断是否**positive definite**.
+
+> 一个对称矩阵A[是正定的，当且仅当它的特征值均为正数](https://www.zhihu.com/question/439383662)[1](https://www.zhihu.com/question/439383662)。另外，A的所有主子式均为正数也是判断A[正定的充分必要条件](https://www.zhihu.com/question/439383662)[1](https://www.zhihu.com/question/439383662)。希望这能帮到你。
+
+
+
+# 复习
+
+从右往左计算式子
+
+
+
+两个向量之间的distance : 向量x减去向量y得到的向量的长度
+
+
+$$
+转化矩阵B=U^{-1}AU
+$$
+
+
+
+
+R(A)代表A的range
+
+
+
+求解
+$$
+S^{\perp} 代表和S垂直的所有矩阵
+$$
+
+
+
+strict triangle form 严格的三角矩阵格式
+
+
+
+使用增广矩阵可以化简矩阵
+
+> 注意,每个行的第一个非0元都需要是1
+>
+> 可以使用化简之后的矩阵判断是否是有解(consistent/inconsistent)的矩阵
+
+
+
+简化的行阶梯型矩阵(gauss jordan reduction)
+
+> 每行的第一个非0元所在的那一列只有它一个非0元素
+
+
+
+scalar : 标量 
+$$
+a_1 代表列向量\\
+\vec{a_1} 代表行向量
+$$
+
+
+I : 是单位矩阵
+
+
+$$
+A B \not= B A
+$$
+
+
+symmetric matrix : 对称矩阵
+
+> 在转置之后是一样的矩阵
+
+
+$$
+singular \\
+存在AB=I=BA,如果可逆,那么B是唯一的\\
+性质: (AB)^{-1} = B^{-1} A^{-1}\\
+     Ax=B有且仅有一个解,当nonsingular\\
+     A是row~equivalent~to~I\\
+求A的逆: (A|I) 经过行变换之后成为 (I|A^{-1}) 
+$$
+
+$$
+转置的性质\\
+(AB)^T = B^T A^T
+$$
+
+$$
+计算阶数大于3的行列式,使用展开\\
+对于行列式,行和列是等价的,即det(A)=det(A^{T})\\
+当行列式是上三角行列式或者下三角行列式的时候,det就等于对角线的乘积\\
+$$
+行列式的性质: 
+
+1. 把一行/一列的K倍拿到矩阵外面去. 把系数K放入矩阵内部的时候,只能选择一行/一列
+2. 2行相对,或者一行是另一行的倍数的时候,det等于0
+3. 一行减去另一行的K倍的时候,det不变
+4. det(A)=0的时候,是singular的
+
+
+
+子空间:
+
+> 满足**加法封闭性,数乘封闭性**
+
+零空间:
+$$
+N(A) = \{x|Ax = 0\}
+$$
+span space : 
+
+> 张成空间
+
+spanning set: 
+
+> 一组向量,通过自由线性组合可以变成新的空间
+
+
+
+线性相关(linear dependent):
+
+> 同理,Ax=0有非0解
+
+* det(A)=0代表线性相关
+
+
+
+基的变换(change of basis)
+
+> 从U到标准基表示,使用UA
+
+
+
+线性变换(liner transformation)
+
+> T(u + v) = T(u) + T(v) T(cu) = cT(u)
+
+
+
+kernel
+
+> 在值域中,使得L(v)=0的全部v构成的空间
+>
+> 符号: Ker()
+
+range
+
+> 符号: R()
+
+
+
+scalar product(数量积/内积):
+
+
+
+向量之间的距离:
+$$
+||x-y||
+$$
+
+$$
+正交的性质: x^T y = 0
+$$
+scalar projection(标量投影);
+
+
+
+空间正交:
+
+> 空间中的任意两组向量都是正交的
+
+正交补(orthogonal complement):
+
+> 所有和Y中所有向量正交的向量,属于正交补空间
+
+* 求解空间A的正交补,使用0空间的求解方法
+
+
+
+orthogonal set;
+
+> 一个向量集合,相互都是正交的
+>
+> * 向量需要是非0向量
+> * 可以得到他们是线性无关的
+
+orthonormal set:
+
+> 拥有orthogonal set的性质,并且,向量的长度都是1
+
+orthonormal basis:
+
+
+
+特征值eigenvalue
+$$
+使得Ax = \lambda x\\
+即存在N(A- \lambda I)\\
+$$
+
+
+nontrivial solution 非0解
+
+
+$$
+对角矩阵D: A = XDX^{-1}
+$$
+
+

@@ -1184,3 +1184,980 @@ SELECT department, AVG(salary) FROM employees GROUP BY department HAVING AVG(sal
 # 第三次实验
 
 使用`NOW()`获得现在的时间
+
+
+
+# 多重查询(multirelation query)
+
+从两个表R,S中查询数据
+
+
+
+## 叉乘查询(join)
+
+R*S
+
+```sql
+SELECT a,b,c
+FROM table1,table2
+```
+
+
+
+* 如果两个表存在一样的**属性名字**,我们需要使用手动表明的方式
+
+```sql
+<relation>.<attribute>
+```
+
+
+
+### self join
+
+可以作用在同一个的表上
+
+* 起一个别名可以起到获得数据库表副本的方式
+
+
+
+获得同一个住址的人
+
+```sql
+SELECT m1,name,m2.name
+FROM moviestar m1,moviestar m2
+WHERE m1.address=m2.address AND m1.name<m2.name
+```
+
+> 使用`<`,而不是`<>`.
+
+
+
+获得比`Jane Fonda`年轻的人
+
+```sql
+select *
+from moviestar m1,moviestar m2
+where m1.name = 'Jane Fonda' AND m2.birhdate>m1.birthdate
+```
+
+
+
+
+
+## 表格合并
+
+1. union
+
+> 集合(不包含重复的内容,会自动去重)
+
+```sql
+(<表格一>)
+union
+(<表格二>)
+```
+
+* 属性名字由第一个表格中的属性名字决定
+
+
+
+* 包括重复部分
+
+> 使用`union all`
+
+
+
+2. intersect
+
+> 交集
+
+
+
+3. except
+
+> 在前一个数据表中存在,但是在后一个数据表中不存在的内容.
+
+
+
+# subquery(子查询)
+
+使用`WHERE`,`HAVING`实现
+
+```sql
+WHERE a = (select b from table)
+```
+
+* 获得一个属性值,比较子查询出来的一个属性值
+
+
+
+* 如果子查询的返回值是null的时候,主要查询的值也是空.
+
+* 如果子查询返回的值多于一个的时候,会报错.
+
+
+
+## 关系关键词(在`WHERE`中)
+
+
+
+`IN`
+
+```sql
+SELECT * FROM Customers WHERE CustomerID IN (SELECT CustomerID FROM Orders);
+```
+
+> 检测数据值是否存在在查询出来的数据表中
+
+* 可以使用`WHERE (name,year) IN (...)`
+
+
+
+`EXISTS`
+
+```sql
+SELECT * FROM Customers WHERE EXISTS (SELECT * FROM Orders WHERE Orders.CustomerID = Customers.CustomerID);
+```
+
+> 检测查询出来的值是否是非空的
+
+
+
+在SQL中，**ALL**、**ANY**和**NOT**是用于比较值的逻辑操作符。
+
+- **ALL**：用于比较一个值是否等于一组值中的所有值。例如，以下查询将返回所有价格高于所有产品的平均价格的产品：
+
+  ```sql
+  SELECT product_name
+  FROM products
+  WHERE price > ALL (
+    SELECT AVG(price)
+    FROM products
+  );
+  ```
+
+* 直接使用`ANY`比较大小,可能会出现存在NULL值的情况,**所有和NULL比较的值结果都是NULL**.
+
+
+
+- **ANY**：用于比较一个值是否等于一组值中的任何一个值。例如，以下查询将返回所有价格高于任何产品的平均价格的产品：
+
+  ```sql
+  SELECT product_name
+  FROM products
+  WHERE price > ANY (
+    SELECT AVG(price)
+    FROM products
+  );
+  ```
+
+- **NOT**：用于否定一个条件。例如，以下查询将返回所有不是来自“德国”、“法国”或“英国”的客户：
+
+  ```sql
+  SELECT * FROM Customers WHERE Country NOT IN ('Germany', 'France', 'UK');
+  ```
+
+> 写在关键词的前面
+
+
+
+* 使用`self subquery`的时候,也需要重新给表命名
+
+
+
+## 子查询(在`FROM`中)
+
+
+
+```sql
+FROM movieexec,(SELECT * FROM movies WHERE ...) prod
+```
+
+> `prod`是重命名查询得到的表格的名字为`prod`.
+
+
+
+# data control
+
+
+
+## constrains(约束)
+
+检查数据的合理性
+
+
+
+1. catch data entry errors(捕获错误)
+2. enforce consistency(保持相关数据统一)
+
+> 可以实现多个表格之前的数据一致性
+
+
+
+* not null
+* keys
+* check
+* foreign-key(or referential-integrity) 相关
+
+
+
+### NOT NULL
+
+使用`NOT NULL`关键字
+
+```sql
+CREATE TABLE ... (
+	gender CHAR(1) NOT NULL,
+)
+```
+
+
+
+```sql
+insert ...
+values(null...)
+```
+
+不会允许
+
+
+
+* 当使用UPDATE更新数据的时候,即使出现了NULL,如果没有找到需要被更新的值,那么也是不会报错的.
+
+
+
+### KEY
+
+使得一个或者多个属性值是独一无二的
+
+* `UNIQUE`允许NULL数值
+
+> 只允许出现多个NULL数值,NULL和所有的数值都是不相等的
+
+* `PRIMARY KEY`不允许NULL
+
+
+
+把多个值的组合作为一个KEY
+
+```sql
+CREATE TABLE ... (
+	a int,
+	b int,
+    PRIMARY KEY(a,b)
+)
+```
+
+
+
+### CHECK
+
+把**check语句**写在属性的定义后面
+
+```sql
+gender CHAR(1) CHECK(gender IN ('F','M'))
+```
+
+> 这样写,可以允许插入NULL值
+
+
+
+* `INSERT`和`UPDATE`的时候,都会执行CHECK
+
+
+
+tuple check(多个数值组成)
+
+```sql
+CHECK (gender='F' OR name NOT LIKE 'Ms.%')
+```
+
+
+
+### REFERENTIAL INTEGRITY
+
+使得一部分数据是相关的,可以自动更新
+
+在一个表格中做的是**following key**
+
+> from sub.A to main.B
+
+
+
+使用`REFERENCES`语句
+
+```sql
+starname varchar(30) REFERENCES moviestar(name)
+```
+
+> 当你`insert`或者`update`SUB表格一个新的值的时候,如果,这个值不在`moviestar`表格的`name`中的时候,会报错.
+>
+> 使用`reference`的表格叫做`SUB`表格
+>
+> 被`reference`的表格叫做`MAIN`表格
+
+> 可以随便往MAIN表格中添加新的内容,因为不受到`reference`限制
+>
+> **修改/删除**MAIN表格中的值,它可能会抛出错误,因为,它可能造成其他SUB表格的引用错误
+
+
+
+* 注意,被`reference`的数值必须是`primary key`或者`unique`
+
+
+
+### forgein key
+
+tuple reference
+
+```sql
+foreign key(movietitle,movieyear) references movies(title,year)
+```
+
+
+
+reference模式
+
+1. default
+
+> 默认是不允许修改的
+
+2. CASCADE
+
+>  因为被引用之后,不可以在MAIN表格中自由修改属性值的问题
+
+>  当一个值被修改的时候,可以自动修改`following value`.
+
+3. SET NULL
+
+> 设置为NULL
+
+```sql
+foreign key(starname) references movieestar(name)
+on delete set null
+on update cascade
+```
+
+
+
+## trigger
+
+`event-[condition]-action rules`
+
+当表格中执行一些操作的时候,执行对应的规则代码
+
+> 如果一些SQL不支持一些语句,比如`CHECK`,可以使用trigger实现
+
+```sql
+CREATE TRIGGER trigger_name
+{BEFORE | AFTER | INSTEAD OF} {event}
+ON table_name
+[FOR [EACH] {ROW | STATEMENT}]
+EXECUTE FUNCTION trigger_function();
+```
+
+
+
+> 使用`new`访问修改之后的值,使用`old`访问修改之前的值
+
+
+
+步骤:
+
+1. 创建一个触发器函数，该函数定义了要执行的操作。您可以使用`CREATE FUNCTION`语句创建触发器函数。触发器函数类似于普通的用户定义函数，但是它们不带参数并且返回类型为`trigger`。
+2. 使用`CREATE TRIGGER`语句将触发器函数绑定到表上。您可以指定触发器应该在何时触发（例如，在插入、更新或删除行之前或之后），以及触发器应该与哪个表相关联。
+
+
+
+# 实验5
+
+
+
+## 创建一个触发器函数
+
+```sql
+CREATE FUNCTION update_movieexec_cert_function()
+RETURNS TRIGGER AS
+$$
+BEGIN
+	UPDATE studio
+	SET studio.presC=studio.presC+(NEW.cert-OLD.cert)
+	WHERE studio.presC=OLD.cert;
+	RETURN NEW;
+END;
+$$
+LANGUAGE plpgsql
+```
+
+
+
+## 创建一个触发器
+
+```sql
+CREATE TRIGGER update_movieexec_cert_trigger
+AFTER UPDATE ON movieexec
+FOR EACH ROW
+EXECUTE FUNCTION update_movieexec_cert_function();
+```
+
+
+
+# transaction
+
+处理同时的操作的
+
+
+
+> [PGSQL的transation是指在数据库中执行一系列操作的一个逻辑单元。transation可以保证操作的原子性、一致性、隔离性和持久性，即ACID特性。transation可以用BEGIN或BEGIN TRANSACTION命令开始，用COMMIT或END TRANSACTION命令结束，或者用ROLLBACK命令撤销。transation可以用来处理复杂的业务逻辑，例如转账、购物等，以确保数据的完整性和安全性。](https://www.postgresql.org/docs/current/tutorial-transactions.html)[1](https://www.postgresql.org/docs/current/tutorial-transactions.html)[2](https://www.runoob.com/postgresql/postgresql-transaction.html)
+>
+> [1](https://www.postgresql.org/docs/current/tutorial-transactions.html): PostgreSQL: Documentation: 16: 3.4. [Transactions ](https://www.postgresql.org/docs/current/tutorial-transactions.html)[2](https://www.runoob.com/postgresql/postgresql-transaction.html): PostgreSQL TRANSACTION（事务） - 菜鸟教程
+
+
+
+> many operations can be grouped into one group.
+>
+> many operations can be done automatically.
+
+
+
+## ACID
+
+atomicity 原子性
+
+consistency 一致性
+
+isolation 隔离性
+
+durability 持久性
+
+> [ACID特性是指**数据库**中的**事务**应该具备的四个特性，分别是**原子性**、**一致性**、**隔离性**和**持久性**。](https://it-biz.online/it-skills/acid/)[1](https://it-biz.online/it-skills/acid/)[2](https://e-words.jp/w/ACID特性.html)[3](https://blog.trocco.io/glossary/acid)
+>
+> - [**原子性**（Atomicity）：事务中的所有操作要么全部成功，要么全部失败，不会出现部分完成的情况。](https://it-biz.online/it-skills/acid/)[1](https://it-biz.online/it-skills/acid/)[2](https://e-words.jp/w/ACID特性.html)[3](https://blog.trocco.io/glossary/acid)
+> - [**一致性**（Consistency）：事务的执行不会破坏数据库的完整性和一致性，事务前后数据库的状态都符合预设的规则。](https://it-biz.online/it-skills/acid/)[1](https://it-biz.online/it-skills/acid/)[2](https://e-words.jp/w/ACID特性.html)[3](https://blog.trocco.io/glossary/acid)
+> - [**隔离性**（Isolation）：事务之间不会相互影响，每个事务都是独立的，不会看到其他事务的中间结果。](https://it-biz.online/it-skills/acid/)[1](https://it-biz.online/it-skills/acid/)[2](https://e-words.jp/w/ACID特性.html)[3](https://blog.trocco.io/glossary/acid)
+> - [**持久性**（Durability）：事务一旦提交，其对数据库的修改就是永久的，即使发生系统故障或崩溃，也不会丢失数据。](https://it-biz.online/it-skills/acid/)[1](https://it-biz.online/it-skills/acid/)[2](https://e-words.jp/w/ACID特性.html)[3](https://blog.trocco.io/glossary/acid)
+>
+> [ACID特性是保证数据库可靠性和正确性的重要原则，也是区分关系型数据库和非关系型数据库的一个标准。](https://it-biz.online/it-skills/acid/)[1](https://it-biz.online/it-skills/acid/)[2](https://e-words.jp/w/ACID特性.html)[3](https://blog.trocco.io/glossary/acid)
+
+
+
+## 隔离等级
+
+隔离等级是指数据库在并发事务处理时，对事务之间的可见性和影响程度的控制。不同的隔离等级有不同的性能和一致性的权衡。SQL标准定义了四种隔离等级，分别是：
+
+- **读未提交**（Read Uncommitted）：最低的隔离等级，允许事务读取未提交的数据，可能导致脏读、不可重复读和幻读的问题。
+- **读已提交**（Read Committed）：只允许事务读取已提交的数据，避免了脏读的问题，但是可能出现不可重复读和幻读的问题。
+- **可重复读**（Repeatable Read）：保证事务在同一时间读取的数据是一致的，避免了脏读和不可重复读的问题，但是可能出现幻读的问题。这是MySQL的默认隔离等级。
+- **串行化**（Serializable）：最高的隔离等级，要求事务串行执行，避免了所有的并发问题，但是性能最差。
+
+
+
+脏读(dirty read): 读到了未被提交并且执行失败被回滚的数据.(在**read uncommitted**中会出现 	)
+
+> 可以使用**read committed**来避免
+
+
+
+如果重复查询一个值,这个值被多次查询前后经过了commit,那么,读到的值依旧会发生改变
+
+我们希望再自己多次查询的commit之前,查询的数值也不发生改变
+
+> 使用**repeatable read**
+
+
+
+# E/R(entity / relationship)
+
+entity / relationship diagrams
+
+
+
+## entity
+
+一个现实中的物体实体
+
+
+
+* 多个实体构成entity set
+
+
+
+### entity attribute
+
+属性,一个个数值
+
+
+
+## 画E/R diagrams
+
+the entity is a reactangle
+
+the entity attribute is a oval
+
+实体之间的关系(relation),使用**线和菱形(diamond)**链接
+
+
+
+1. 把entity set放到一个图表里面去
+
+* 一个实体本身也是一个relationship,relationship的个数 = realtion(菱形的个数) + entity(实体的个数)
+
+
+
+# convert diagram to relational scheme
+
+1. 图中的每个element(entity)作为一个表格
+2. element之间的连接应该被作为一个新的relation
+
+* 使用**连接两个entity构成的新的表格**不需要包含elements的全部内容(只需要key attributes)
+* 如果存在`many-one`(一个element的一个主键可以关联另一个表格中的多个),并且,另一个表格的主键和新表格的主键一一对应,那么可以合并新的表格和一一对应的表格
+
+
+
+## multipicity
+
+* `many-one`: 多对一的关系
+* `one-one`: 一对一的关系
+* `many-many`: 多对多的关系
+
+
+
+### many-one
+
+**使用一个箭头指向`one`的部分**,代表非箭头的部分(many)可以使用至多一个`one`部分的元素.
+
+> arrow: at most one(至多一个)
+>
+> round arrow: exactly one(有且仅有一个)
+
+
+
+## 合并表格
+
+出现`many-one`的关系的时候,可以使用**`many`的部分和要构建出的新relation**合并
+
+> `many`部分中的全部属性 + `one`部分的key attributes
+
+
+
+* 你可以从**合并的表格**中抽取key attributes作为**原本新增的relation**.
+
+
+
+### supporting entity set
+
+如果一个entity是supporting entity set,需要满足
+
+> 1. 是`many-one`关系中的`one`部分
+> 2. 不适用合并表格的话,`many`部分会有重复(不能正常使用key attributes)
+
+
+
+* 使用**double diamond(2倍轮廓线的菱形)**表示relationship
+
+
+
+### weak entity set
+
+与上述supporting entity set相关
+
+
+
+* 使用**double reactangle(两倍矩形)**表示weak entity set
+
+
+
+## super class
+
+superclass and subclass is connected by relationship called isa
+
+
+
+* 使用**triangle(三角形) + 线**表示super class和sub class的连接
+
+
+
+* superclass需要包含subclass的全部数据内容
+
+
+
+## subclass
+
+![image-20231222120135626](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20231222120135626.png)
+
+> 尖端指向的部分是super class
+>
+> 平面指的是subclass
+
+
+
+子类不需要包含superclass中的全部属性,只需要包含**superclass的key attributes和自己的特有的属性**.
+
+> 获取的具体数据的时候,会使用key attributes到superclass中查找
+
+
+
+# normalization
+
+redundant information : 不必要的信息
+
+update anomalies : 修改异常
+
+deletion anomalies : 删除异常
+
+
+
+# decompose
+
+避免anomalies的出现
+
+> 正确的拆分entity set的内容
+
+
+
+* key attributes需要一致
+
+
+
+## 第一级别的设计
+
+> 全部的属性全部放到一个entity set中
+
+
+
+## super key
+
+包含key attributes,同时也可能包含其他内容
+
+
+
+> key: title,year
+>
+> super key: title,year,length
+
+
+
+## functional dependence
+
+多个值的对应的值是唯一的
+
+
+
+### trival functional dependence
+
+琐碎的FD
+
+> key组成的集合可以确定其中任意一个key的内容
+
+
+
+### super key
+
+使用key组成的集合可以确定任何一个非key attribute
+
+
+
+* 有些时候,部分的key就可以表达其他的值,说明key多余了,不属于第二级设计
+
+
+
+## 第二级的设计
+
+non-key attribute is not partly functionally dependent on the primary key
+
+
+
+步骤
+
+> 1. 确定key attributes
+
+
+
+* 如果只有一个key,那么它一定是第二级的设计,因为一个key不可以再被拆分了
+
+
+
+## 第三级的设计
+
+第二级的设计可能出现,non-key可以被non-key functional dependent
+
+我们需要尽量避免出现non-key can be determined by another non-key
+
+
+
+## BCNF(boyce-codd normal form)
+
+步骤
+
+> 1. decide the key(找到所有的KEY)
+> 2. work out all nontrival FD
+
+
+
+* 左边的式子需要是super key
+
+
+
+## 第四级的设计
+
+multivalued dependency
+
+
+
+# 复习
+
+
+
+## 定义一个数据库
+
+![image-20240105174745489](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240105174745489.png)
+
+
+
+
+
+## 创建一个表
+
+![image-20240105175851083](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240105175851083.png)
+
+
+
+`CHAR(n)`指的是具体n个的字符串
+
+`VARCHAR(n)`指的是至多n个的字符串
+
+
+
+## 删除一个表
+
+`DROP TABLE R;`
+
+
+
+## 数据库系统的标准结构
+
+external level = user level 
+
+conceptual level = logic level
+
+internal level = physical level
+
+
+
+## TIP
+
+relation = table
+
+
+
+## types of data model
+
+* hierarchical data model : like a tree
+* graph data model : like the graph
+* relational data model : use data structure as a set of tables
+* object-oriented data model
+* object relational data model
+* semi-structure data model 
+* nosql data model
+
+
+
+## data structure
+
+table and only table
+
+
+
+it is a logical structure instead of physical structure, 从物理的底层存储中抽象出来了一种表示
+
+
+
+## 行定义
+
+attributes : header row
+
+tuple : a row beside the header row/an ordered list of vale
+
+
+
+## schemas
+
+relation schema = relation name(attribute list)
+
+
+
+## TIP
+
+行.列的顺序不重要,tuple and attributes一样就是同一张表
+
+
+
+database = set of named realtions/tables
+
+each realtion has a set of named attributes/columns
+
+each tuple/row has a value for each attribute
+
+each attribute has a type/domain
+
+database schema = relation schema sets
+
+
+
+## modification
+
+insert a tuple or tuples
+
+delete a tuple or tuples
+
+update the value(s) of an existing tuples
+
+
+
+## basic integrity in relational database
+
+* no tuples are absolutely same(没有绝对相同的数据)
+* no attributes titles are absolutely same in one table(没有属性名是相同的)
+
+* there should be a primary key(但不是绝对要求有主键)
+
+
+
+## key
+
+attribute whose value is unique in each tuple
+
+* 存在联合键,多个属性构成一个key
+
+* 
+
+
+
+使用下划线标注作为key的属性
+
+
+
+设置primary key
+
+`name VARCHAR(255) PRIMARY KEY`
+
+
+
+## unique
+
+可以使用这个关键字设置attribute value是不同的
+
+
+
+* unique运行null,但是primary key不允许null(注意,全部的primary key字段都不能为null)
+
+
+
+## alter 修改表
+
+添加一个attribute
+
+```sql
+ALTER TABLE R 
+ADD attribute_name attribute_type;
+```
+
+
+
+删除一个attribute
+
+```sql
+ALTER TABLE R 
+DROP attribute_name;
+```
+
+
+
+## 12 rules
+
+1. the data stored in database must e a value of some table cell
+2. very single data element need to be accessiable with a combination of table name, attribute name primary key
+3. null value needs to be treated specially
+4. activate online catalog
+5. the database can be only accessed by the lanuage
+6. the database can be updated must also be updatable by the system
+7. 
+
+
+
+## operator in relational algebra
+
+![image-20240106145849262](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240106145849262.png)
+
+
+
+![image-20240106152045420](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240106152045420.png)
+
+
+
+![image-20240106152710146](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240106152710146.png)
+
+
+
+![image-20240106153354050](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240106153354050.png)
+
+
+
+![image-20240106153921947](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240106153921947.png)
+
+
+
+* 如果在natural join之前进行renaming,可以方便的合并
+
+
+
+
+
+![image-20240106155205790](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240106155205790.png)
+
+![image-20240106155400714](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240106155400714.png)
+
+![image-20240106155550054](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240106155550054.png)
+
+![image-20240106155657217](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240106155657217.png)
+
+例题
+
+![image-20240106160245792](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240106160245792.png)
+
+![image-20240106160300916](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240106160300916.png)
+
+
+
+## SQL语句的类别
+
+![image-20240106160553352](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240106160553352.png)
+
+
+
+## 查询语句
+
+```sql
+SELECT name,address
+FROM table_name
+WHERE condition;
+```
+
+
+
+### 查询到的语句输出常量
+
+![image-20240106190214237](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240106190214237.png)
+
+> 会多出一个全都是`hours`的列
+
+
+
+### 查询的时候使用新的列名
+
+If you want the result to have different attribute names, use  “AS ” to rename an attribute.
+
+```sql
+SELECT title,year,length/60 as duration,’hours’ as inhours
+FROM movies;
+```
+
