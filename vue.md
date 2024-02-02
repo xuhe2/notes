@@ -1118,6 +1118,18 @@ const message = inject('message')
 
 
 
+* 设置默认值
+
+```vue
+// 如果没有祖先组件提供 "message"
+// `value` 会是 "这是默认值"
+const value = inject('message', '这是默认值')
+```
+
+
+
+
+
 * 使用`工厂函数`
 
 在一些场景中，默认值可能需要通过调用一个函数或初始化一个类来取得。为了避免在用不到默认值的情况下进行不必要的计算或产生副作用，我们可以使用工厂函数来创建默认值：
@@ -1277,5 +1289,541 @@ app.directive('demo', (el, binding) => {
 
 
 
-# VUE项目实战
+# npm
+
+```powershell
+npm install --registry https://registry.npm.taobao.org
+```
+
+
+
+# 懒加载
+
+```vue
+const routes = [
+  {
+    path: '/',
+    name: 'home',
+    component: HomeView
+  },
+  {
+    path: '/about',
+    name: 'about',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+  }
+]
+```
+
+
+
+# 路由
+
+
+
+```vue
+  <nav>
+    <router-link to="/">Home</router-link> |
+    <router-link to="/about">About</router-link>
+  </nav>
+```
+
+> 在`app.vue`文件中使用
+
+
+
+```vue
+  <router-view />
+```
+
+> 路由的视图
+
+
+
+## 使用子路由
+
+> index.js配置
+
+```javascript
+import { createRouter, createWebHistory } from 'vue-router'
+
+const routes = [
+  {
+    path: '/',
+    name: 'Layout',
+    component: () => import('../views/Layout/Layout.vue'),
+    children: [{
+      path: '/user',
+      name: 'user',
+      component: () => import('../views/Pages/UserList.vue')
+    },]
+  }
+]
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes
+})
+
+export default router
+```
+
+
+
+使用**element-plus**组件库之后可以实现更好的效果
+
+布局方面,使用
+
+```vue
+<template>
+    <div class="common-layout">
+        <el-container>
+            <el-header>Header</el-header>
+            <el-container>
+                <el-aside width="200px">
+                    <RouterLink to="/user">user</RouterLink>
+                </el-aside>
+                <el-main>
+                    <RouterView></RouterView>
+                </el-main>
+            </el-container>
+        </el-container>
+    </div>
+</template>
+```
+
+> 边栏的选择的路由会在`<RouterView>`中展示内容
+
+
+
+# 具名导出,默认导出
+
+
+
+- 不使用{}的时候，表示导入模块的**默认导出**（export default），这种方式只能导入一个值，而且可以随意命名，例如 `import A from './A'`。
+- 使用{}的时候，表示导入模块的**命名导出**（export），这种方式可以导入多个值，但是必须和模块中的导出名称一致，例如 `import { A, B, C } from './A'`。
+- 如果模块中既有默认导出又有命名导出，可以同时使用两种方式导入，例如 `import A, { B, C } from './A'`，其中A是默认导出，B和C是命名导出。
+- 如果想要在导入的时候重命名导入的值，可以使用 `as` 关键字，例如 `import { A as X, B as Y } from './A'`，这样就可以用X和Y代替A和B。
+
+
+
+# 使用**element-plus**设置表单
+
+```vue
+<el-form ref="formRef" :model="loginData" label-width="120px" class="demo-dynamic">
+    <el-form-item prop="email" label="Email" :rules="[
+        {
+            required: true,
+            message: 'Please input email address',
+            trigger: 'blur',
+        },
+        {
+            type: 'email',
+            message: 'Please input correct email address',
+            trigger: ['blur', 'change'],
+        },
+    ]">
+        <el-input v-model="dynamicValidateForm.email" />
+    </el-form-item>
+    <el-form-item v-for="(domain, index) in dynamicValidateForm.domains" :key="domain.key" :label="'Domain' + index"
+        :prop="'domains.' + index + '.value'" :rules="{
+            required: true,
+            message: 'domain can not be null',
+            trigger: 'blur',
+        }">
+        <el-input v-model="domain.value" />
+        <el-button class="mt-2" @click.prevent="removeDomain(domain)">Delete</el-button>
+    </el-form-item>
+    <el-form-item>
+        <el-button type="primary" @click="submitForm(formRef)">Submit</el-button>
+        <el-button @click="addDomain">New domain</el-button>
+        <el-button @click="resetForm(formRef)">Reset</el-button>
+    </el-form-item>
+</el-form>
+```
+
+> 其中`:model`绑定的是**存储你想要获得的数据的字典**
+>
+> 在`el-form-item`中使用`prop="email"`绑定存储数据的字典的key
+
+
+
+# 使用`@`
+
+这样，你就可以在任何地方使用`@`来引用`src`目录下的文件，而不用担心当前文件的位置。例如，你可以这样导入`src/stores/counter.js`文件：
+
+```js
+import { useCounterStore } from '@/stores/counter'
+```
+
+
+
+# pinia
+
+全局变量管理工具
+
+```js
+// stores/counter.js
+import { defineStore } from 'pinia'
+
+export const useCounterStore = defineStore('counter', {
+  state: () => {
+    return { count: 0 }
+  },
+  // 也可以这样定义
+  // state: () => ({ count: 0 })
+  actions: {
+    increment() {
+      this.count++
+    },
+  },
+})
+```
+
+> 其中`state`是一个函数,返回的是一个字典对象
+
+
+
+* `actions`是异步操作,可以返回`promise`
+
+
+
+* 使用`pinia`构建的Store对象是一个具名的,使用的是具名导出
+
+
+
+## 使用`store`
+
+
+
+```js
+import { useStore } from '@/Stores/index.js'
+// 可以在组件中的任意位置访问 `store` 变量 ✨
+const store = useStore();
+```
+
+1. 导入
+2. 实例化,然后使用里面的变量
+
+
+
+## 访问其中的`state`
+
+```js
+const store = useStore()
+
+store.count++
+```
+
+> 直接访问`count`即可
+
+
+
+* 重置为初始内容
+
+```js
+const store = useStore()
+
+store.$reset()
+```
+
+```js
+export const useCounterStore = defineStore('counter', () => {
+  const count = ref(0)
+
+  function $reset() {
+    count.value = 0
+  }
+
+  return { count, $reset }
+})
+```
+
+
+
+## 访问引用和访问简单数据类型的区别
+
+当试图获取一个简单的数据类型的时候
+
+```js
+const number = store.counter;
+```
+
+> 使用赋值给一个新的简单变量,是不可取的
+
+> 但是获取一个复杂类型的时候,由于使用的是引用,这是可行的
+>
+> 函数也是可行的
+
+
+
+## getters
+
+创建函数,这个函数可以返回一个修改之后的属性值
+
+```js
+    getters: {
+        doubleCount: (state) => state.counter * 2 // 定义一个getter
+    }
+```
+
+> 传入state,是自己的,在实际使用的时候,它自动从实例中获得
+
+
+
+## 组合式API风格编写pinia
+
+```js
+import { defineStore } from "pinia";
+
+export const useStore = defineStore('counter', () => {
+    const counter = 0;
+    function increment() {
+        this.counter++;
+    }
+    return { counter, increment }
+});
+```
+
+> 最后需要return需要的内容
+
+
+
+# js的this
+
+指向的是使用当前函数的对象
+
+> this来自上一级
+
+
+
+* 使用严格模式的时候,不存在调用对象的时候,不会使用`window`,直接返回`undefined` 
+* 使用`setTimeout`的时候,`this`指向的是windows
+
+
+
+# 创建路由守卫
+
+```js
+router.beforeEach((to, from, next) => {}) 
+```
+
+> `to`:要前往的路由
+>
+> `from`:当前离开的路由
+>
+> `next`:函数,负责到下一个部分
+
+
+
+* 注意,使用`next();`函数本身会触发路由守卫,可能导致死循环
+
+```js
+// 创建路由守卫
+router.beforeEach((to, from, next) => {
+  const userInfoStore = useUserInfoStore();
+  if (!userInfoStore.userInfo.username && to.path !== '/login') {
+    next('/login');
+  } else {
+    next();
+  }
+})
+```
+
+> 使用检查目标path的方式可以避免死循环
+
+
+
+## 刷新造成pinia数据丢失
+
+刷新会造成pinia数据丢失,需要使用数据持久化技术
+
+
+
+## 储存在localStorage中避免丢失数据
+
+加入`localStorage`
+
+```js
+localStorage.setItem("userInfo", JSON.stringify(loginData));
+```
+
+
+
+
+
+从`lcoalStorage`中读取数据
+
+```js
+import { defineStore } from "pinia";
+import { reactive } from 'vue'
+
+export const useUserInfoStore = defineStore('UserInfo', () => {
+    const userInfo = reactive(localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : {});
+    const setUserInfo = (info) => {
+        Object.assign(userInfo, info);
+    };
+    return { userInfo, setUserInfo }
+});
+```
+
+* 注意,存储的数据可能不存在
+
+
+
+## 退出
+
+```js
+import LayoutMenu from '../Menu/LayoutMenu.vue'
+import { useRouter } from 'vue-router';
+
+import { useUserInfoStore } from '@/Stores/UserInfo';
+
+const store = useUserInfoStore();
+const router = useRouter();
+
+function logout() {
+    // 退出登陆逻辑
+    localStorage.removeItem('userInfo');
+    // 清除用户信息(当前)
+    store.userInfo = {};
+    // 跳转到登陆页面
+    router.push('/login');
+}
+```
+
+
+
+
+
+# 在JS代码中实现路由跳转
+
+```js
+const store = useUserInfoStore();
+const router = useRouter();
+function handleLogin() {
+    store.userInfo = loginData;
+    router.push("/"); // 跳转到主页，具体路由根据实际情况调整
+};
+```
+
+* 注意,变量定义必须在外面
+
+
+
+# axios
+
+使用`axios`实现HTTP请求
+
+
+
+* `timeout`指的是请求超时的时间
+
+
+
+## 请求拦截和响应拦截
+
+使用`axios`的方法实现拦截
+
+```js
+// 请求拦截
+loginService.interceptors.request.use(
+    config => {
+        loading = ElLoading.service({
+            lock: true,
+            text: 'Loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+        });
+        return config;
+    }
+);
+```
+
+> 需要返回配置信息
+
+
+
+## 出错时展示
+
+使用element-plus的message展示错误消息
+
+
+
+```js
+import { ElMessage } from 'element-plus'
+```
+
+> 使用`Elmessage`展示
+
+
+
+```js
+        ElMessage({
+            message: '网络异常',
+            type: 'error'
+        })
+```
+
+> 使用对象
+
+
+
+## AXIOS的消息类型
+
+axios 的 responseType 是一个选项，用于指定服务器响应的数据类型。不同的 responseType 可以影响 axios 如何处理响应数据。以下是一些常见的 responseType 类型及其用法示例：
+
+- 默认值： ‘json’ ，会自动解析响应数据并返回一个 JavaScript 对象。例如：
+
+```js
+axios.get('/api/data').then(response => {
+  console.log(response.data); // 返回解析后的 JavaScript 对象
+});
+```
+
+- ‘arraybuffer’ ：返回一个 ArrayBuffer 对象，适用于处理二进制数据。例如：
+
+```js
+axios.get('/api/data', { responseType: 'arraybuffer' }).then(response => {
+  console.log(response.data); // 返回 ArrayBuffer 对象
+});
+```
+
+- ‘blob’ ：返回一个 Blob 对象，适用于处理图像等二进制数据。例如：
+
+```js
+axios.get('/api/image', { responseType: 'blob' }).then(response => {
+  console.log(response.data); // 返回 Blob 对象
+});
+```
+
+- ‘document’ ：返回一个 Document 对象，适用于处理 HTML/XML 数据。例如：
+
+```js
+axios.get('/api/data', { responseType: 'document' }).then(response => {
+  console.log(response.data); // 返回 Document 对象
+});
+```
+
+- ‘text’ ：返回一个字符串，适用于处理纯文本数据。例如：
+
+```js
+axios.get('/api/data', { responseType: 'text' }).then(response => {
+  console.log(response.data); // 返回字符串
+});
+```
+
+- ‘stream’ ：返回一个 Stream 对象，适用于处理流式数据。例如：
+
+```js
+// GET request for remote image in node.js
+axios({
+  method: 'get',
+  url: '^5^',
+  responseType: 'stream'
+}).then(function (response) {
+  response.data.pipe(fs.createWriteStream('ada_lovelace.jpg'))
+});
+```
 

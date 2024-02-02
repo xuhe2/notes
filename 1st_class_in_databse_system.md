@@ -2161,3 +2161,516 @@ SELECT title,year,length/60 as duration,’hours’ as inhours
 FROM movies;
 ```
 
+
+
+## NULL
+
+用来表示丢失或者不存在的值
+
+* 使用比较的时候,会出现**unkown**
+* 可以使用**IS**/**IS NOT**检查
+
+
+
+## logic of conditions
+
+1. true
+2. false
+3. unkown
+
+
+
+![image-20240106192803826](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240106192803826.png)
+
+![image-20240106192931381](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240106192931381.png)
+
+
+
+## 使用`BETWEEN AND`
+
+```sql
+SELECT title,year,length
+FROM movie
+WhERE length BETWEEN 116 AND 120;
+```
+
+
+
+## LIKE
+
+通配符包括`%`,`_`
+
+
+
+`%` ( = “any string”);  
+
+`_` ( = “any character.”);
+
+
+
+* 可以使用`NOT LIKE`排除一种状况
+
+
+
+## VIEW
+
+[pgsql 的 view（视图）是一种虚拟的表，它是由一个预定义的查询语句生成的。视图不会实际存储数据，而是每次引用时执行查询语句。视图可以从一个或多个表或其他视图创建，它可以让用户以更自然或直观的方式查看数据，也可以限制数据的访问，或者汇总多个表的数据](https://www.postgresql.org/docs/current/sql-createview.html)[1](https://www.postgresql.org/docs/current/sql-createview.html)[2](https://www.runoob.com/postgresql/postgresql-view.html)。
+
+
+
+创建一个视图
+
+```sql
+create View Vname As
+<Query>
+```
+
+```sql
+Create View(A1…An) Vname As
+<Query>
+```
+
+
+
+* 插入删除修改数据的操作和TABLE是一样的
+
+
+
+## 排序
+
+```sql
+SELECT * FROM weather ORDER BY city ASC, temp_lo DESC;
+```
+
+
+
+## aggregation operator(聚合操作)
+
+包含sum ,Avg,max,min,count
+
+> Sql use five aggregation operators to calculate result  from set of values .
+
+
+
+```sql
+SELECT avg(length)
+FROM movies
+```
+
+
+
+[pgsql 的 aggregation operator（聚合操作符）是一种用于对一组值进行计算并返回一个单一结果的函数，例如 sum, avg, count, max, min 等](https://www.postgresql.org/docs/current/functions-aggregate.html)[1](https://www.postgresql.org/docs/current/functions-aggregate.html)。pgsql 的聚合操作符对 NULL 的操作会根据不同的函数而有不同的结果，一般来说，有以下几种情况：
+
+- [如果聚合操作符的输入值都是 NULL，那么返回值也是 NULL。例如，`sum(NULL)` 返回 NULL](https://blog.csdn.net/djrm11/article/details/118210285)[2](https://blog.csdn.net/djrm11/article/details/118210285)。
+- [如果聚合操作符的输入值中有 NULL 和非 NULL 的混合，那么返回值会忽略 NULL 并只计算非 NULL 的值。例如，`avg(1, 2, NULL, 4)` 返回 2.333](https://blog.csdn.net/djrm11/article/details/118210285)[2](https://blog.csdn.net/djrm11/article/details/118210285)。
+- [如果聚合操作符的输入值中有 NULL 和非 NULL 的混合，但是要求返回值不能为 NULL，那么可以使用 COALESCE 函数来替换 NULL 为其他值。例如，`sum(COALESCE(salary, 0))` 可以将 salary 列中的 NULL 替换为 0，然后计算总和](https://bbs.csdn.net/topics/190179836)[3](https://bbs.csdn.net/topics/190179836)。
+
+
+
+### COUNT计算NULL值
+
+pgsql 中，COUNT 计数的列如果遇到 NULL 会怎么样，取决于 COUNT 的用法。一般来说，有以下两种情况：
+
+- [如果使用 COUNT (*)，那么会计算表中的所有行，不管是否包含 NULL 值](https://www.cnblogs.com/gered/p/12195729.html)[1](https://www.cnblogs.com/gered/p/12195729.html)[2](https://zhuanlan.zhihu.com/p/538688824)。例如，`SELECT COUNT (*) FROM test;` 会返回 test 表中的总行数，不管每一行的值是否为 NULL。
+- [如果使用 COUNT (列名)，那么会忽略 NULL 值，只计算非 NULL 值的行](https://www.cnblogs.com/gered/p/12195729.html)[1](https://www.cnblogs.com/gered/p/12195729.html)[2](https://zhuanlan.zhihu.com/p/538688824)。例如，`SELECT COUNT (name) FROM test;` 会返回 test 表中 name 列的非 NULL 值的行数，如果 name 列的值都是 NULL，那么结果为 0。
+
+
+
+## GROUP BY(分组)
+
+可以根据莫一个列来分组
+
+```sql
+select studioname
+from movies
+group by studioname;
+```
+
+
+
+* 在分组的状态下使用
+
+
+
+## HAVING
+
+用来筛选group
+
+```sql
+Select A1,A2,…,An
+From R1
+Where condition
+Group by Ak
+Having condition 
+Order by Ai [ASC|DESC], Aj [ASC|DESC], …
+```
+
+
+
+* 注意,`GROUP BY ... HAVING ...`要在`ORDER BY`之前 
+
+
+
+## DISTINCT
+
+- SELECT DISTINCT：在返回查询结果之前，去除重复的记录，每个重复的数据组中只保留一条记录。例如，`SELECT DISTINCT name FROM employee;` 会返回 employee 表中的所有不同的姓名。
+- DISTINCT ON：根据指定的列或表达式，返回每个分组中的第一条记录。例如，`SELECT DISTINCT ON (dept_id) dept_id, name, salary FROM employee ORDER BY dept_id, salary DESC;` 会返回每个部门中薪水最高的员工的信息。
+- IS DISTINCT FROM：用于比较两个可能为空的值是否不同。例如，`SELECT 1 IS DISTINCT FROM NULL;` 会返回 true，而 `SELECT NULL IS DISTINCT FROM NULL;` 会返回 false。
+- 聚合函数中的 DISTINCT：用于对一组值进行计算时，只考虑不重复的值。例如，`SELECT COUNT(DISTINCT name) FROM employee;` 会返回 employee 表中的不同姓名的个数。
+
+
+
+## CONCAT
+
+用来合并字符串
+
+```sql
+select title,year,concat(length/60,"hrs")
+from movies
+```
+
+
+
+## EXTRACT
+
+从数据中提取一部分的内容
+
+```sql
+Select Name,extract(year from birthdate)as birthyear
+From moviestar
+```
+
+
+
+[pgsql 的 EXTRACT 是一种函数，它可以从日期或时间值中提取出指定的字段，例如年、月、日、时、分、秒等](https://www.rockdata.net/zh-cn/tutorial/function-extract/)[1](https://www.rockdata.net/zh-cn/tutorial/function-extract/)。它的语法如下：
+
+```sql
+EXTRACT(field FROM source)
+```
+
+[其中，field 是要提取的字段，可以是以下值之一](https://www.rockdata.net/zh-cn/tutorial/function-extract/)[2](https://www.postgresql.org/docs/current/functions-datetime.html)：
+
+- YEAR
+- MONTH
+- DAY
+- HOUR
+- MINUTE
+- SECOND
+- CENTURY
+- DECADE
+- DOW
+- DOY
+- EPOCH
+- ISODOW
+- ISOYEAR
+- MICROSECONDS
+- MILLISECONDS
+- QUARTER
+- TIMEZONE
+- TIMEZONE_HOUR
+- TIMEZONE_MINUTE
+- WEEK
+
+[source 是要提取的日期或时间值，可以是 TIMESTAMP, TIME, INTERVAL, 或 DATE 类型的值或表达式](https://www.rockdata.net/zh-cn/tutorial/function-extract/)[1](https://www.rockdata.net/zh-cn/tutorial/function-extract/)。
+
+例如，以下是一些使用 EXTRACT 的示例：
+
+- 从 TIMESTAMP 值中提取年份：
+
+```sql
+SELECT EXTRACT(YEAR FROM TIMESTAMP '2021-04-06 12:43:59');
+```
+
+结果是 2021。
+
+- 从 TIME 值中提取分钟部分：
+
+```sql
+SELECT EXTRACT(MINUTE FROM TIME '12:43:59');
+```
+
+结果是 43。
+
+- 从 INTERVAL 值中提取秒数部分：
+
+```sql
+SELECT EXTRACT(SECOND FROM INTERVAL '6 years 5 months 4 days 3 hours 2 minutes 1 second');
+```
+
+结果是 1。
+
+- 从 DATE 值中提取一年中的第几天：
+
+```sql
+SELECT EXTRACT(DOY FROM DATE '2021-04-06');
+```
+
+结果是 96。
+
+
+
+## join
+
+![image-20240106213517716](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240106213517716.png)
+
+
+
+### self-join
+
+* Select statement allow working on same relations
+* In order to distinguish, give each relation an alias
+
+```sql
+SELECR r1.A1,…,r1.An ,r2.A1……
+FROM R r1 , R r2
+WHERE condition
+```
+
+**注意,在这里不需要使用`AS`关键词**
+
+**注意,我们使用self-join的时候,一般会使用`>`/`<`运算符,防止数据重复**
+
+
+
+例题
+
+>  Find the star pairs that share the same address
+
+```sql
+SELECR star1.name,star2.name,star2.address
+FROM moviestar star1,moviestar star2
+WHERE star1.name<star2.name AND 
+star1.address=star2.address
+```
+
+
+
+## 集合操作
+
+![image-20240107120300478](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240107120300478.png)
+
+
+
+## subquery with WHERE
+
+注意,子查询需要使用`()`包含.
+
+* Subqueries can return a single constant , and  this constant can be compared with another  value in a WHERE clause
+
+![image-20240107121744921](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240107121744921.png)
+
+
+
+### subquery的操作符
+
+PGSQL的子查询操作符是用于在一个查询中嵌入另一个查询的方法。子查询操作符可以用于比较表达式、逻辑表达式或集合表达式中。PGSQL支持以下几种子查询操作符：
+
+- **EXISTS**：判断子查询是否返回至少一行数据。如果是，返回true，否则返回false。例如：
+
+```
+SELECT col1 FROM tab1 WHERE EXISTS (SELECT 1 FROM tab2 WHERE col2 = tab1.col2);
+```
+
+- **IN**：判断一个值是否在子查询返回的集合中。如果是，返回true，否则返回false。例如：
+
+```
+SELECT film_id, title FROM film WHERE film_id IN (SELECT inventory.film_id FROM rental);
+```
+
+- **ANY / SOME**：判断一个值是否满足子查询返回的集合中的任意一个或某些元素的条件。如果是，返回true，否则返回false。例如：
+
+```
+SELECT film_id, title FROM film WHERE rental_rate > ANY (SELECT rental_rate FROM film WHERE rating = 'R');
+```
+
+- **ALL**：判断一个值是否满足子查询返回的集合中的所有元素的条件。如果是，返回true，否则返回false。例如：
+
+```
+SELECT film_id, title FROM film WHERE rental_rate < ALL (SELECT rental_rate FROM film WHERE rating = 'G');
+```
+
+* **NOT**
+
+
+
+### 当子查询中不仅仅包含一个attribute的时候
+
+![image-20240107123922648](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240107123922648.png)
+
+
+
+## subquery with FROM
+
+
+
+*  We need a name for referring to the relation computed  by the subqueries(所以,我们需要在FROM语句中给查询出来的内容起名)
+
+
+
+## constraints
+
+A constraint is a relationship among data  elements that the DBMS is required to  enforce.
+
+
+
+[PGSQL的约束是用于规定表中的数据规则的一种方法。如果存在违反约束的数据行为，行为会被约束终止。约束可以在创建表时规定，也可以在表创建之后规定。约束确保了数据库中数据的准确性和可靠性。](https://www.postgresql.org/docs/current/ddl-constraints.html)[1](https://www.postgresql.org/docs/current/ddl-constraints.html)
+
+PGSQL支持以下几种约束：
+
+- **NOT NULL**：指示某列不能存储NULL值。
+- **UNIQUE**：确保某列的值都是唯一的。
+- **PRIMARY KEY**：NOT NULL和UNIQUE的结合。确保某列（或多个列的组合）有唯一标识，有助于更容易更快速地找到表中的一个特定的记录。
+- **FOREIGN KEY**：保证一个表中的数据匹配另一个表中的值的参照完整性。
+
+```sql
+presC int references movieexec(cert)
+```
+
+> referenced attributes must be defined as primary key or unique
+
+```sql
+CREATE TABLE comment (
+  name varchar(45),
+  owner varchar(45),
+  id uuid,
+  comment text,
+  PRIMARY KEY (id),
+  CONSTRAINT comment_name_fkey
+    FOREIGN KEY (name, owner)
+    REFERENCES cat (name, owner)
+);
+```
+
+
+
+
+
+- **CHECK**：保证列中的值符合指定的条件。
+- **EXCLUSION**：排他约束，保证如果将任何两行的指定列或表达式使用指定操作符进行比较，至少其中一个操作符比较将会返回false或空值。
+
+
+
+### 不满足的时候执行的操作
+
+![image-20240107142524468](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240107142524468.png)
+
+
+
+## CHECK
+
+在**插入/更新**数据的时候执行
+
+
+
+```sql
+Gender CHAR(1) CHECK(gender IN ('F', ‘M'))
+```
+
+
+
+```sql
+CREATE TABLE moviestar (
+name varCHAR(30) primary key,
+address varCHAR(255),
+gender char(1),
+birthdate DATE,
+CHECK (gender=’F’ OR name not like ’Ms.%’ );
+```
+
+
+
+## TRIGGER
+
+![image-20240107145909714](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240107145909714.png)
+
+* 注意,`old`和`new`都是对修改的那个数据的
+
+
+
+## VIEW
+
+
+
+### 类别
+
+1. Virtual = not stored in the database; just a  query for constructing the relation.
+2. Materialized = actually constructed and  stored.
+
+
+
+## INDEX
+
+![image-20240107153333252](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240107153333252.png)
+
+> 使用B-树加快搜索
+
+
+
+## ER
+
+entity : 一个实体, a tuple of table
+
+entity : 实体集合
+
+entity attribute
+
+
+
+### ER图形状
+
+Entity set = rectangle
+
+Attribute = oval, with a line to the rectangle representing its  entity set.
+
+relationship = diamond
+
+
+
+* relationship图中只有组成图中的主键
+
+
+
+## MULTIPLICITY
+
+
+
+many-one
+
+![image-20240107160820549](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240107160820549.png)
+
+![image-20240107160834068](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240107160834068.png)
+
+
+
+* 可以合并relationship和table
+
+![image-20240107161519830](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240107161519830.png)
+
+
+
+one-one
+
+![image-20240107160903721](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240107160903721.png)
+
+
+
+superclass/subclass
+
+![image-20240107163800694](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240107163800694.png)
+
+
+
+## redundant
+
+可能造成
+
+1. 修改一个内容的时候,其他数据中的相同内容没有被修改 UPDATE ANOMALIES
+2. 删除的时候,可能删除过多的内容 DELETION ANOMALIES
+
+使用DECOMPOSE
+
+
+
+## 1ST NORMAL FORM
+
+![image-20240108150610690](C:\Users\Thinkpad\AppData\Roaming\Typora\typora-user-images\image-20240108150610690.png)
