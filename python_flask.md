@@ -959,6 +959,26 @@ from flask import current_app
         return jsonify({"error": "Invalid JSON format"}), 400
 ```
 
+或者使用`request`中的`get_json`方法
+
+```python
+@auth.post('/login')
+def login():
+    req = request.get_json()
+    return jsonify(req)
+```
+
+
+
+## 使用`jsonify`返回JSON
+
+```python
+@auth.post('/login')
+def login():
+    req = request.get_json()
+    return jsonify(req)
+```
+
 
 
 
@@ -1007,3 +1027,242 @@ from flask import current_app
     }
 ```
 
+
+
+# 初始项目环境配置
+
+
+
+```shell
+pip install pymysql sqlalchemy flask_sqlalchemy
+```
+
+> 使用MYSQL数据的依赖项
+
+
+
+# 使用MYSQL的配置
+
+```python
+from flask_sqlalchemy import SQLAlchemy  # 导入扩展类
+
+db = SQLAlchemy()
+
+
+class Config(object):
+    """配置参数"""
+    # 设置连接数据库的URL
+    user = 'root'
+    password = ''
+    database = 'flask_learn'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://%s:%s@127.0.0.1:3306/%s' % (user, password, database)
+
+    # 设置sqlalchemy自动更跟踪数据库
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
+
+    # 查询时会显示原始SQL语句
+    SQLALCHEMY_ECHO = True
+
+    # # 禁止自动提交数据处理
+    # app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = False
+
+
+class User(db.Model):
+    __tablename__ = 'users'
+    __table_args__ = {'mysql_collate': 'utf8_general_ci'}
+
+    ID = db.Column(db.Integer, primary_key=True, autoincrement=True)  # 用户ID(使用_避免关键字冲突)
+    # 用户的名字不能重复
+    Name = db.Column(db.String(32), nullable=False, unique=True)
+    # account = db.Column(db.String(11), nullable=False, unique=True)
+    Password = db.Column(db.String(64), nullable=False)  # 使用了加密措施
+    Type = db.Column(db.String(10), nullable=False)
+
+    # avatar = db.Column(db.String(256))
+    # age = db.Column(db.Integer)
+    # gender = db.Column(db.String(8))
+    # create_time = db.Column(db.DateTime)
+    # login_time = db.Column(db.DateTime)  # 最近上线时间点
+    # logout_time = db.Column(db.DateTime)  # 最近下线时间点
+    # balance = db.Column(db.Float)
+
+    def __repr__(self):
+        return f"<User(ID={self.ID},Name='{self.Name}',Type='{self.Type}')>"
+
+    # 检查密码
+    def check_password(self, password) -> bool:
+        if self.Password == password:
+            return True
+        else:
+            return False
+
+```
+
+
+
+对`app.py`文件加载配置
+
+```python
+from db import Config, db
+
+#  加载配置
+app.config.from_object(Config)
+
+#  初始化数据库
+with app.app_context():
+    db.init_app(app)
+    db.create_all()
+```
+
+
+
+## 使用PYTHON包的形式使用
+
+`__init__.py`
+
+```python
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
+# 导入定义的模型
+from .users import Users
+
+
+class Config(object):
+    """配置参数"""
+    # 设置连接数据库的URL
+    user = 'root'
+    password = ''
+    database = 'to_do'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://%s:%s@127.0.0.1:3306/%s' % (user, password, database)
+
+    # 设置sqlalchemy自动更跟踪数据库
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
+
+    # 查询时会显示原始SQL语句
+    SQLALCHEMY_ECHO = True
+
+    # # 禁止自动提交数据处理
+    # app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = False
+
+```
+
+
+
+## 添加数据
+
+```python
+    #  创建新用户
+    user = Users(Name=name, Password=password)
+    db.session.add(user)
+    db.session.commit()
+```
+
+
+
+
+
+# 使用命令行运行flask项目
+
+```shell
+flask run
+```
+
+
+
+* 需要使用内网服务的时候,需要使用
+
+```shell
+flask run --host=0.0.0.0
+```
+
+
+
+# 允许跨域请求
+
+```shell
+pip install flask-cors
+```
+
+
+
+```python
+from flask import Flask, request
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app, supports_credentials=True)
+```
+
+
+
+# 文件
+
+
+
+## 文件上传
+
+初始化文件
+
+```python
+from flask import Blueprint
+
+# 存储文件的目录
+UPLOAD_FOLDER = './static/files/'
+# 允许的文件格式
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
+file = Blueprint('file', __name__)
+
+from .upload import *
+
+```
+
+请求处理
+
+```python
+from flask import request
+from werkzeug.utils import secure_filename
+from flask import jsonify
+import os
+
+from . import file, UPLOAD_FOLDER
+
+
+@file.post('/upload')
+def upload():
+    response: dict = {'msg': 'No file uploaded.', 'success': False}
+
+    _file = request.files['file']
+    # 这里可以对接收到的文件进行处理，比如保存到本地或者进行其他操作
+    # 以下代码为示例，将接收到的文件保存到本地
+    if _file:
+        filename = secure_filename(_file.filename)
+        _file.save(os.path.join(UPLOAD_FOLDER, filename))
+        response['msg'] = 'File uploaded successfully.'
+        response['success'] = True
+
+    return jsonify(response)
+
+```
+
+
+
+## 文件下载
+
+```python
+@file.post('/download')
+def download():
+    """
+    下载文件
+    """
+    request_data = request.get_json()
+    file_name: str = request_data.get('file_name')
+    return send_from_directory(UPLOAD_FOLDER, file_name, as_attachment=True)
+
+```
+
+> 使用`send_from_directory`函数实现
+
+* 自动会设置`content-type`的内容

@@ -1696,6 +1696,46 @@ function logout() {
 
 
 
+## 样例
+
+```js
+// 创建路由守卫
+router.beforeEach((to, from, next) => {
+  // 判断用户是否登录
+  const userInfoStore = useUserInfoStore();
+  let isLogin = false;
+  // 判断用户是否存在
+  if (userInfoStore.userInfo.Name && userInfoStore.userInfo.Password) {
+    // 使用authService实例发送POST请求
+    authService.post('/login', userInfoStore.userInfo)
+      .then(res => {
+        const data = res.data;
+        if (data.is_exist == true) {
+          isLogin = true; //用户存在
+        }
+        // 如果用户未登录，且要访问的页面不是登录页面，则跳转到登录页面
+        if (!isLogin && to.path !== '/login') {
+          next('/login');
+        } else {
+          next();
+        }
+      })
+      .catch(err => {
+        console.error(err); // 打印错误信息
+      });
+  } else {
+    // 避免死循环
+    if (to.path === '/login') {
+      next();
+    } else {
+      next('/login');
+    }
+  }
+})
+```
+
+
+
 
 
 # 在JS代码中实现路由跳转
@@ -1742,6 +1782,10 @@ loginService.interceptors.request.use(
 ```
 
 > 需要返回配置信息
+
+
+
+* 默认显示加载动画
 
 
 
@@ -1827,3 +1871,294 @@ axios({
 });
 ```
 
+
+
+## 样例代码
+
+```js
+import axios from "axios";
+// 使用element-plus的加载动画
+import { ElLoading } from 'element-plus'
+// 加入element-plus的message显示
+import { ElMessage } from 'element-plus'
+
+let loadingObj = null;
+
+// 创建一个实例
+const authService = axios.create({
+    timeout: 5000, // 请求超时时间
+    baseURL: "http://127.0.0.1:5000/auth/",
+    headers: {
+        'Content-Type': 'application/json'
+    }
+});
+
+// 请求拦截
+authService.interceptors.request.use(config => {
+    loadingObj = ElLoading.service({
+        lock: true,
+        text: 'Loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+    });
+    return config;
+});
+
+// 响应拦截
+authService.interceptors.response.use(response => {
+    if (loadingObj != null) {
+        loadingObj.close();
+    }
+    return response;
+}, error => {
+    if (loadingObj != null) {
+        loadingObj.close();
+    }
+    ElMessage({
+        message: '服务器异常',
+        type: 'error',
+        duration: 2000
+    });
+    return Promise.reject(error);
+});
+
+
+export default authService;
+```
+
+
+
+
+
+# 初始化一个新的项目
+
+```shell
+vue ui
+```
+
+打开VUE的WEB界面管理
+
+
+
+安装`AXIOS`依赖项
+
+
+
+创建的时候添加`babel`,`router`,`CSS pre-processors`,`linter`
+
+
+
+使用`web history`模式的URL
+
+
+
+前往`element-plus`官网获得`yarn`的指令安装`element-plus`组件库
+
+```js
+// 使用element-plus
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
+
+app.use(ElementPlus)
+```
+
+* 最好使用按需导入
+
+
+
+调节tsconfig/jsconfig文件
+
+使得VOLAR能找到element-plus组件库的组件信息和配置
+
+
+
+导入vue-icon组件
+
+
+
+安装`pinia`
+
+```js
+// 使用pinia
+import { createPinia } from 'pinia'
+const pinia = createPinia()
+
+app.use(pinia)
+```
+
+
+
+
+
+# 使用CSS样式居中
+
+```css
+	/* 居中 */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+```
+
+
+
+# CSS做一个背景
+
+```css
+.background {
+    z-index: -1;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-image: url('@/assets/login_background_image.png');
+    background-size: cover;
+}
+```
+
+> 使用`z-index`使得背景在最下方
+
+
+
+# CSS设置背景不透明度
+
+```css
+	/* 设置背景不透明度 */
+    background-color: rgba(255, 255, 255, 0.4);
+```
+
+
+
+# 非空验证规则
+
+```js
+// 非空验证规则
+const necessary_rules = [
+    {
+        required: true,
+        message: '必填项',
+        trigger: 'blur',
+    },
+]
+```
+
+
+
+# 使用`pinia`
+
+
+
+定义一个储存类(从localStorage中加载初始化)
+
+```js
+import { defineStore } from "pinia";
+import { reactive } from "vue";
+
+export const useUserInfoStore = defineStore("UserInfo", () => {
+    // 从本地储存中读取
+    const userInfo = reactive(JSON.parse(localStorage.getItem("userInfo") || "{}"));
+    // 设置userInfo
+    const setUserInfo = (newUserInfo) => {
+        Object.assign(userInfo, newUserInfo);
+    };
+    // 保存到本地
+    const saveUserInfo = () => {
+        localStorage.setItem("userInfo", JSON.stringify(userInfo));
+    };
+    return { userInfo, setUserInfo, saveUserInfo };
+});
+
+```
+
+
+
+使用
+
+```js
+                // 存储用户信息到store
+                const userInfoStore = useUserInfoStore();
+                // 设置用户信息
+                userInfoStore.setUserInfo(loginData);
+                // 保存到本地
+                userInfoStore.saveUserInfo();
+```
+
+
+
+* 注意,需要**具名导入**.
+
+
+
+# 登陆/登出
+
+```js
+// 登陆用户的函数
+function login() {
+    // 使用authService实例发送POST请求
+    authService.post('/login', loginData)
+        .then(res => {
+            const data = res.data;
+            if (data.is_exist == true) {
+                // 存储用户信息到store
+                const userInfoStore = useUserInfoStore();
+                // 设置用户信息
+                userInfoStore.setUserInfo(loginData);
+                // 保存到本地
+                userInfoStore.saveUserInfo();
+
+                // 跳转界面
+                window.location.href = '/';
+            } else {
+                ElNotification({
+                    title: 'Error',
+                    message: '不存在此用户',
+                    type: 'error',
+                    duration: 3000,
+                });
+            }
+        })
+        .catch(err => {
+            console.error(err); // 打印错误信息
+        });
+};
+```
+
+
+
+```js
+function logout() {
+    const userInfoStore = useUserInfoStore();
+    userInfoStore.setUserInfo({
+        "Name": "",
+        "Password": "",
+    });
+    userInfoStore.saveUserInfo();
+    window.location.reload();
+}
+```
+
+
+
+# 文件
+
+
+
+## 文件下载
+
+```js
+import saveAs from 'file-saver';
+const handleDownload = async (index) => {
+    // 向后端发送请求下载文件
+    fileService.post('/download', { file_name: tableData[index].FileName }, { responseType: 'blob' })
+        .then(res => {
+            const blob = new Blob([res.data]);
+            saveAs(blob, tableData[index].FileName);
+        }).catch(err => {
+            ElMessage({
+                message: err.response.data.msg,
+                type: 'error',
+                duration: 5000
+            });
+        });
+}
+```
+
+> 使用`file-saver`第三方库,好像不需要导包语句

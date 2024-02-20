@@ -4,6 +4,18 @@
 >
 > > JAVA 程序的开始一定是一个`public class Main` class 下的一个`public static void main(String[] args)`的方法
 
+
+
+# integer
+
+```java
+int num = Integer.parseInt("abc");
+```
+
+
+
+
+
 # float and double
 
 > 浮点数运算和整数运算相比，只能进行加减乘除这些数值计算，不能做位运算和移位运算。
@@ -23,7 +35,17 @@ if (r < 0.00001) {
 }
 ```
 
+
+
+* 给`float`的变量赋值的时候,需要使用`3.14f`.
+
+
+
 # array
+
+* 使用`ArrayList`.
+
+
 
 - java array init
 
@@ -1490,5 +1512,131 @@ List<Integer> list = List.of(array);
 
 ```java
 System.gc() //
+```
+
+
+
+# 关键字
+
+
+
+## `final`
+
+使用`final`表示一个变量,那么这个变量是不可变的值
+
+
+
+## `finally`
+
+配合`try`,`catch`使用
+
+在最后的被调用
+
+ 
+
+## `Infinity`
+
+出现在**除数为0的时候**,**可能出现`-Infinity`的情况**
+
+
+
+## NaN
+
+not a number
+
+出现**被除数为0的时候**
+
+
+
+# 基本数据类型缓存池
+
+使用`Interger`对象的时候
+
+1. 直接`new`一个实例,那么不会被缓存
+2. 使用`valueOf`方法创建的实例,使用的相同的内存空间
+
+
+
+字符串常量池
+
+使用`""`创建的字符串使用的是**常量池**
+
+使用`new String`创建出来的是一个新的
+
+* 用来节约空间
+
+* 使用`intern`方法返回的是**字符串常量池**中的引用
+
+
+
+# 字符串拼接
+
+使用**StringBuilder**的`append`方法
+
+不使用`+`
+
+* 可以提升性能
+
+```java
+StringBuilder sb = new StringBuilder();
+for (int i = 0; i < 100000; i++) {
+    sb.append("六六六");
+}
+```
+
+
+
+## 代码初始化块
+
+使用`{}`包裹的代码可以不写在构造函数中也可以在构造的时候初始化,并且执行优先于构造函数
+
+
+
+# 泛型
+
+类似**模板化**
+
+```java
+class Arraylist<E> {
+    private Object[] elementData;
+    private int size = 0;
+
+    public Arraylist(int initialCapacity) {
+        this.elementData = new Object[initialCapacity];
+    }
+    
+    public boolean add(E e) {
+        elementData[size++] = e;
+        return true;
+    }
+    
+    E elementData(int index) {
+        return (E) elementData[index];
+    }
+}
+```
+
+
+
+构建一个**泛型方法**
+
+
+
+# 读取文件
+
+```java
+try {
+    // 创建 File 对象，表示要扫描的文件
+    File file = new File("docs/安装环境.md");
+    Scanner scanner = new Scanner(file); // 创建 Scanner 对象，从文件中读取数据
+    while (scanner.hasNextLine()) { // 判断文件中是否有下一行
+        String line = scanner.nextLine(); // 读取文件中的下一行
+        System.out.println(line); // 打印读取的行
+    }
+    scanner.close(); // 关闭 Scanner 对象
+} catch (FileNotFoundException e) {
+    System.out.println("文件不存在！");
+}
+
 ```
 
