@@ -1640,3 +1640,97 @@ try {
 
 ```
 
+
+
+# 上课内容
+
+JAVA特性:
+
+1. 封装
+2. 继承
+3. 多态
+
+
+
+robust 可靠的
+
+
+
+# 文件
+
+文件名要和`public class`名字相同
+
+> file name = public class name
+
+
+
+## 入口函数
+
+来自指定类的
+
+```java
+	public static void main(String[] args) {
+        
+    }
+```
+
+
+
+
+
+# JDK
+
+JDK包含`JRE`,`开发工具`
+
+JRE包括`JVM`,库,其他文件
+
+
+
+# 变量
+
+JAVA中不能连续赋值
+
+```java
+int x=y=1; // error
+```
+
+
+
+* `12.0`默认是`double`类型
+
+
+
+* 使用`final`命名常量
+
+
+
+> byte 8bit
+>
+> short 16bit 
+>
+> int 32bit
+>
+> float 32bit
+>
+> long 64bit
+>
+> double 64bit
+
+
+
+## 类型转换
+
+高转低,需要强制类型转换
+
+低转高,可以隐式类型转换
+
+
+
+byte<short<int<long<float<double
+
+```java
+int x = (int)1.0; // 显式类型转换
+```
+
+* 强制类型转换不可省略
+* 转换的时候,会**截断小数部分**.
