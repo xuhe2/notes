@@ -363,3 +363,327 @@ export default Alert;
 ```
 
 * `current`代表可用时指向的对象,然后可以使用**属性名**访问相应内容
+
+
+
+# 是否渲染当前元素
+
+使用JS的`&&`特性实现
+
+```js
+{flag && <input/>};
+```
+
+
+
+# hook函数
+
+使用**函数闭包**的方式实现
+
+
+
+使用规则:
+
+1. 只能在组件中和其他的hook函数中使用
+2. 在组件的顶层中调用(不能在if/for函数中)
+
+
+
+# redux
+
+用来管理**全局变量**
+
+* 数据不可变
+
+
+
+```bash
+npm install @reduxjs/toolkit react-redux
+```
+
+
+
+文件保存在`store`文件夹下
+
+需要一个`index.js`文件,配置使用`redux`
+
+实例文件保存在`models`文件夹下
+
+
+
+## `index.js`
+
+查看官方文档
+
+> 使用`configureStore `注册
+
+
+
+```js
+import { configureStore } from '@reduxjs/toolkit'
+
+export default configureStore({
+  reducer: {}
+})
+```
+
+
+
+## `index.ts`
+
+使用TS的语法避免报错信息
+
+```ts
+import { configureStore } from '@reduxjs/toolkit'
+
+import counterReducer from "./models/counterSlice.ts";
+
+const store =  configureStore({
+    reducer: {
+        counter: counterReducer
+    }
+})
+
+export default store;
+// 从 store 本身推断出 `RootState` 和 `AppDispatch` 类型
+export type RootState = ReturnType<typeof store.getState>
+// 推断出类型: {posts: PostsState, comments: CommentsState, users: UsersState}
+export type AppDispatch = typeof store.dispatch
+
+```
+
+
+
+
+
+## `counterSlice.ts`
+
+```tsx
+import { createSlice } from "@reduxjs/toolkit";
+
+const counterSlice = createSlice({
+    name: "counter",
+    initialState: {
+        value: 0
+    },
+    reducers: {
+        increment: state => {
+            state.value++;
+        },
+        decrement: state => {
+            state.value--;
+        }
+    }
+})
+
+// 按需导出
+export const { increment, decrement } = counterSlice.actions;
+// 默认导出
+export default counterSlice.reducer;
+```
+
+> 使用`initialState`设定初始化状态
+>
+> `reducers`作为处理状态的函数
+
+
+
+## 注册reducer
+
+```tsx
+import { configureStore } from '@reduxjs/toolkit'
+
+import counterReducer from "./models/counter";
+
+export default configureStore({
+    reducer: {
+        counter: counterReducer
+    }
+})
+```
+
+
+
+## 在`main.ts`中加入`Provider`
+
+```tsx
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App.tsx";
+import "./index.css";
+// import bootstrap
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+// import redux
+import store from "./store/index.ts";
+import { Provider } from "react-redux";
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </React.StrictMode>
+);
+
+```
+
+* 应该使用完整的文件名, 不应该缺少后缀名
+
+
+
+## 定义`hooks.ts`
+
+为防止TS语法的报错信息, 需要使用`hooks.ts`中的函数
+
+```ts
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import type { RootState, AppDispatch } from './index'
+
+// 在整个应用程序中使用，而不是简单的 `useDispatch` 和 `useSelector`
+export const useAppDispatch: () => AppDispatch = useDispatch
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
+```
+
+使用`useAppDispatch`代替`useDispatch`
+
+使用`useAppSelector`代替`useSelector`
+
+
+
+## 在组件中使用`redux`
+
+需要从`Slice`文件中导入`action`函数
+
+从`hooks.ts`导入`useAppSelector`,`useAppDispatch`
+
+```tsx
+import { increment, decrement } from "../store/models/counterSlice.ts";
+import { useAppDispatch, useAppSelector } from "../store/hooks.ts";
+
+const Alert = () => {
+  const count = useAppSelector((state) => state.counter.value);
+  const dispatch = useAppDispatch();
+
+  return (
+    <>
+      <div>{count}</div>
+      <button onClick={() => dispatch(increment())}>+</button>
+      <button onClick={() => dispatch(decrement())}>-</button>
+    </>
+  );
+};
+
+export default Alert;
+
+```
+
+
+
+# react router
+
+使用了router之后, 不需要使用`<App />`
+
+
+
+## `src/routes/index.tsx`
+
+```tsx
+import App from "../App.tsx";
+import { createBrowserRouter } from "react-router-dom";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App></App>,
+  },
+]);
+
+export default router;
+
+```
+
+> 路由配置界面
+
+
+
+## `main.tsx`
+
+```tsx
+// use router
+import { RouterProvider } from "react-router-dom";
+import router from "./routes/index.tsx";
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
+  </React.StrictMode>
+);
+
+```
+
+
+
+## 跳转界面
+
+
+
+### 声明式导航
+
+使用`<Link>`跳转
+
+> `to`属性作为需要跳转到的URL
+
+```tsx
+import { Link } from "react-router-dom";
+
+const HomePage = () => {
+  return (
+    <>
+      <div>HomePage</div>
+      <Link to="/about">About</Link>
+    </>
+  );
+};
+
+export default HomePage;
+
+```
+
+* 是整个界面跳转
+
+
+
+## 函数式导航
+
+```tsx
+const navigate = useNavigate();
+
+<button onClick={() => navigate("about")}></button>
+```
+
+
+
+## 使用参数传递
+
+
+
+## 嵌套路由
+
+使用`children`配置路由嵌套关系
+
+使用`<Outlet/>`作为二级路由的渲染位置
+
+
+
+* 默认的二级路由
+
+> 不需要`path`属性, 使用`index=true`实现
+
+
+
+* 404 not found 界面
+
+> `path`设置为`*`的时候, 就是`not found`的时候自动跳转的界面

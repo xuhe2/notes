@@ -35,8 +35,47 @@ event A is {3,6}
 
 
 
+* 非负性
+
+
+
 complement 补集
 
 intersection 交集
 
 disjoint 没有相关元素的
+
+
+
+# permutation
+
+排列
+
+
+
+# combination
+
+$$
+C_{r}^{n} = \frac{n!}{(n-r)!r!}
+$$
+
+
+
+# frequency and proability
+
+频率的可能性取决于实验
+
+* 实验的次数足够多的时候, 频率会稳定到概率
+
+
+
+多余多个有交集的事件使用**容斥**
+
+
+
+# a partition of S
+
+一些事件交集为空,并集是S全集,那么就是S的划分
+
+* mutually exclusive
+* union is S

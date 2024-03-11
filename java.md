@@ -1656,6 +1656,12 @@ robust 可靠的
 
 
 
+# TIP
+
+`boolean`和`int`的转换是不行的, 但是可以使用三元运算符实现
+
+
+
 # 文件
 
 文件名要和`public class`名字相同
@@ -1734,3 +1740,203 @@ int x = (int)1.0; // 显式类型转换
 
 * 强制类型转换不可省略
 * 转换的时候,会**截断小数部分**.
+
+
+
+* 大小写敏感的变量名
+
+
+
+* `boolean`和`int`之前不能转换
+
+
+
+## round-off error
+
+因为精度造成的错误
+
+
+
+## unintended integer division
+
+在表达式中, 操作的类型不一致,造成的代码类型的转换问题
+
+
+
+## 冗余的输入对象
+
+多个scanner实例被创建
+
+
+
+# if
+
+如果只有一个执行语句,那么可以不使用`{}`.
+
+
+
+* 如果执行语言多于1行,需要使用`{}`
+
+* 尽量避免浮点数之间的比较
+
+
+
+简化代码,例如`boolean flag = number % 2 == 0;`.
+
+
+
+# 创建随机数
+
+```java
+Math.random();
+```
+
+**0<=number<1**的浮点数(double)
+
+`[a,a+b)`使用`a+Math.random()*b`实现
+
+
+
+# 操作符
+
+存在中断(short-circuit的情况)
+
+
+
+* bit operator不存在中断的情况, `&&`和`||`会造成中断
+
+
+
+arithmetic operator > rational operator > logical operator > assignment operator
+
+
+
+# 常用方法
+
+Math的全部方法都是static的
+
+`ceil`向上取整
+
+`floor`向下取整
+
+
+
+* `rint`和`round`返回的是`int`类型, 其他返回的是`double`类型
+
+
+
+# unicode
+
+使用`\u`作为开头,从`\u0000`到`\uFFFF`.
+
+* ASCII是UNICODE的一部分
+
+
+
+# mybatis
+
+导入依赖的时候
+
+需要`mybatis`和`mysql`的依赖
+
+
+
+## POJO
+
+需要设置JAVA类
+
+* 属性需要和数据库中的一致
+
+
+
+```java
+package com.xuhe.to_do_java.model.pojo;
+
+import lombok.Data;
+
+@Data
+public class User {
+    private String id;
+    private String name;
+    private String password;
+}
+
+```
+
+
+
+
+
+## mapper
+
+从数据库中映射数据过来
+
+```java
+@Mapper
+public interface UserMapper {
+
+    @Select("select * from users where id = #{id}")
+    User selectUserById(int id);
+}
+```
+
+* 是一个接口类
+* 使用**注解**
+
+
+
+## service
+
+定义接口
+
+```java
+public interface UserService {
+
+    public User getUserById(int id);
+}
+```
+
+
+
+### implement
+
+```java
+@Service
+public class UserServiceImpl implements UserService {
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Override
+    public User findUserById(int id){
+        return userMapper.findUserById(id);
+    }
+}
+```
+
+* 使用`Service`注解
+* 使用`Autowired`注入
+
+
+
+# `application.yml`文件配置
+
+
+
+
+
+# bean配置
+
+自动扫描加入代码中
+
+因为写了`SpringBootApplication`的注解(是多个注解组合成的注解)的文件代码, 在当前包和子包中的代码都会被检查
+
+
+
+## 注册第三方对象
+
+作为有`@Bean`的注解的函数的返回值注入
+
+
+
+一般有一个`@Configuration`配置类中注册有`@Bean`的函数
