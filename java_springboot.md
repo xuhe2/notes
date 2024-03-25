@@ -313,6 +313,22 @@ List<Users> users = usersMapper.selectList(new QueryWrapper<Users>().eq("name",r
 
 
 
+# AOP
+
+面向切面编程
+
+使用代理的方式减少重复代码
+
+> 分成静态代理和动态代理
+
+springboot使用动态代理
+
+
+
+使用`@Aspect`注解申明我的类, 使用`@After`等相关注解指定在某个函数的某个方法被执行的时候, 使用这个切面的方法
+
+
+
 # 实践
 
 

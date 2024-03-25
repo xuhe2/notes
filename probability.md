@@ -79,3 +79,106 @@ $$
 
 * mutually exclusive
 * union is S
+
+
+
+# 条件概率
+
+P(A|D) 指的是在D条件下
+$$
+\frac{P(AD)}{P(D)}
+$$
+就是结果
+
+* 条件概率和原来的概率可能相等
+
+
+
+## 独立
+
+如果`P(B|A)=P(B)`,那么他们是independent
+
+独立的时候, `P(AB) = P(A)P(B)`,`P(A'B) = P(A')P(B)`
+
+
+
+# multiplicative rules
+
+`P(A∩B) =P(A)P(B|A)`
+
+
+
+如果A,B是独立的, 那么`P(A∩B) = P(A)P(B|A) = P(A)P(B)`
+
+* 必然事件和其他事件也是独立的
+
+
+
+`P(A1∩A2∩A3∩ ∩Ak)=P(A1)P(A2|A1)P(A3|A1∩A2)...P(Ak|A1∩A2∩A3∩ ∩Ak−1)`
+
+
+
+# random variable
+
+每种情况对应的值的内容
+
+M代表match variable
+
+
+
+# probability mass function
+
+(x,p(x))是一个函数
+
+> P(x)>=0
+>
+> 全部的加一起为1
+
+
+
+* p(x)是离散分布的内容, 加起来是1
+
+
+
+# cumulative function/distribution
+
+随机变量小于等于某个数的概率
+
+
+
+`F(x) = P(X <= x)`
+
+* 当出现x是不合理(不会出现的值)的时候, P(x)为0
+
+
+
+把一个一个分段的函数部分写成**左闭合右开放**的分段函数, p(x)
+
+
+
+## 概率密度函数
+
+
+
+使用图表示的时候, P(...) = 阴影面积, 所以叫做**概率密度函数(probability density function)** 代表f(x), **f(x)积分的累计结果是F(x)**
+
+> 全部面积相加等于1
+>
+> 面积表示落在这里的可能性
+
+
+
+## continuous proability distribution
+
+continuous proability distribution不可以使用离散的方式表达, 并且在单点上的概率可能是0
+
+* 对于**连续性的**, 单点是没有意义的, 所以`P(a<x<b) = P(a<=x<=b)`, 这点对非连续性是无效的
+* 不可以使用bar table form(离散方法)表示
+
+
+
+# 多维度的(joint probability function)
+
+P(X=x, Y=y)
+
+* 和一维的一样对待

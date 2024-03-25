@@ -1769,6 +1769,12 @@ int x = (int)1.0; // 显式类型转换
 
 
 
+## 从浮点数到char类型
+
+先从浮点数到`int`,再从`int`到char
+
+
+
 # if
 
 如果只有一个执行语句,那么可以不使用`{}`.
@@ -1830,6 +1836,111 @@ Math的全部方法都是static的
 使用`\u`作为开头,从`\u0000`到`\uFFFF`.
 
 * ASCII是UNICODE的一部分
+
+
+
+* 使用`\u000A`作为一个换行, 可能破坏注释
+
+
+
+# string
+
+创建的时候, 
+
+> 使用`new`+`构造参数`, 直接申请了新的内存
+>
+> 使用`字符串字面量`创建的时候, 进入**字符串常量池**
+
+* 使用`.equals`比较
+
+
+
+使用`+`或者`concat`拼接字符串
+
+```java
+"chapter"+2; // chapter2
+```
+
+
+
+使用`substring`获取字串, 左闭合右开放
+
+使用`indexOf`查找位置
+
+
+
+## 转换类型
+
+使用`Integer`的`parseInt`方法实现, 其他类似
+
+
+
+
+
+
+
+# 读入
+
+`next`默认读入的是字符串
+
+`nextLine`读入一整行
+
+* `nextLine`和别的读入方法混合的时候, 可能出现`nextLine`读到**残留的回车**
+
+* `nextInt`会残留换行符和空格
+
+
+
+# 输出格式化
+
+`%b`代表`Boolean`类型
+
+`%5c`代表五个char, 添加四个空格在前面
+
+`%10.2f`代表7个整数部分,一个小数点,2个小数部分
+
+
+
+# 循环
+
+`continue`可能造成`while`语句的递增条件不被执行
+
+
+
+可以给循环打标签, 使用`continue/break Outer`
+
+```java
+Outer:
+        for (int i = 0; i < 5; i++){
+            
+            Inner:
+            for (int j = 0; j < 5; j++){
+                if (i == 2 && j == 2)
+                    break Outer;
+                System.out.println("i = " + i + ", j = " + j);
+            }
+        }
+```
+
+
+
+# 方法
+
+modifier: 类似`static`,`public`的修饰符
+
+
+
+* 放在`if`语句中的`return`不被认为是全部情况的`return`,即使代码逻辑完整,但是会被认为是**无返回值**情况
+
+
+
+---
+
+
+
+# spring boot
+
+以下是springboot内容
 
 
 

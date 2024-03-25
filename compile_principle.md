@@ -255,4 +255,156 @@ lookahead
 
 transition: 转换, 有标签的箭头线
 
-start state: 启动状态, 是一个没有标签的箭头线
+state: 状态, 用圆圈构成
+
+start state: 启动状态, 是一个没有标签的箭头线指向的圆圈
+
+accepting state: 接受状态, 进入这个状态代表当前字符串就是我要找的, 用双重圆圈组成
+
+> 如果被传入的字符没有transition可以进入, **即使已经进入accepting state, 也是一个error**
+
+
+
+* 用来verify的
+
+
+
+## DFA(deterministic finite automation)
+
+有限自动机
+
+M: machine 
+
+M由alphabet组成, 一些状态集合S, 开始于s0(某个状态), 一些接受状态A(是S的子集), 有transition function(从一个集合映射到另一个集合) 
+
+
+
+* 组合多个自动机可以成为一个新的自动机, 同时拥有两个自动机的原先的功能, 
+
+  > 在多个自动机前面公用一个start state
+  >
+  > 
+
+
+
+* 任何的DFA可以变成code
+
+
+
+## NFA(nondeterministic finite automation)
+
+不确定自动机
+
+
+
+多个自动机组成新的自动机的时候, 可能出现同一个时间段出现相同的`transition`, 这个时候下一个状态就是不确定的
+
+> `lookahead`: 直接检查更长的输入内容, 检查下一个会被输入的内容
+>
+> `backtracking`: 穷尽的方式(深搜回溯)
+
+* 任何一个`NFA`可以变成`DFA`.
+
+> 把同一个时间的相同操作合并成一个
+>
+> * 注意, 不相同的状态是不能合并的, 比如`accepting state`不能和普通state合并, 需要新建, 保持等级统一
+
+$$
+使用\varepsilon表示无操作也可以转换过去, 空操作, 使用\varepsilon来新建一个操作
+$$
+
+
+
+# 汤姆森构造 thompson's construction
+
+使用直接列出一个一个NFA
+
+* 适合机器
+* 拆分成一个一个字符, 然后使用`concatenation`连接多个字符, 比如`ab`使用`a`和`b`来concatenation起来作为一个`ab`
+
+
+
+# concatenation 
+
+连接不同的自动机, 从上一个自动机的**accepting state**状态使用一个
+$$
+\varepsilon
+$$
+连接到另一个自动机的**start state**
+
+
+
+# choice
+
+开始**start state**使用多个
+$$
+\varepsilon
+$$
+作为每个原来的**start state**, 结尾部分公用一个**accepting state**, 所以原来的**accepting state**作为普通state, 使用
+$$
+\varepsilon
+$$
+连接到公用的**accepting state**
+
+
+
+# 闭包
+
+合并全部的
+$$
+\varepsilon
+$$
+, 使得全部可以到达的state作为一个state
+
+
+
+# 从NFA到DFA(subset construction)
+
+* DFA的下一个状态是唯一确定的
+
+
+
+需要尽可能精简代码
+
+
+
+使用**subset construction**算法实现, 转换之后也需要实现`start state`和`accepting state`
+
+
+
+## 要求
+
+去掉epsilon, **使用epsilon closure**
+
+* 存在epsilon的话就是NFA
+
+去除从一个single input character可以到达的multiple state
+
+
+
+
+
+## epsilon closure
+
+一个状态通过epsilon转换(线)可以到达的状态
+$$
+\bar1 = {1,2,4}~状态1通过\varepsilon线可以到达的state\\
+多状态的闭包
+$$
+上面的state 1被消除epsilon closure之后, 这个状态会变成{1,2,4}
+
+假设{1,2,4}经过一个`a`转换步骤之后会变成3, 3的epsilon closure是{2,3,4}, 那么下一个状态是{2,3,4}, 然后对{2,3,4}每个状态找epsilon closure
+
+
+
+* 转换为DFA之后的accepting state指的是当前状态下包含**原先状态的accepting state**的状态都是**新的accepting state**.
+
+
+
+## 最小化DFA
+
+状态数最小的DFA就是最小化的, 合并状态
+
+
+
+使用transition检查不同的state是否可以合并, 当不同的state有不同的transition的时候, 明显是不可以合并的

@@ -121,7 +121,7 @@
     }
 ```
 
-`R`代表`res`文件夾下的资源
+`R`代表`res`文件夾下的资源, 是由JAVA自动生成的类
 
 `layout`代表文件夹的名字
 
@@ -148,4 +148,67 @@
 ## 设置文本
 
 使用`android:text`或者`setText`设置文本内容
+
+
+
+* 硬编码应该使用`@string`, 不应该直接写在代码中
+
+> 使用`@string/<name>`配置
+
+
+
+### 文本大小
+
+使用`android:textSize=""`属性, 必须指定单位
+
+使用`setTextSize`方法来设置, 使用`SP`单位
+
+
+
+### 设置颜色
+
+使用`textColor`属性来设置文本的颜色
+
+使用`setTextColor`方法实现设置颜色
+
+> 设置颜色的样式, 可以通过JAVA类Color来设置, 里面定义了很多的常量
+
+
+
+* 可以在`@color`中配置自己的自定义颜色
+
+
+
+设置`background`作为背景颜色
+
+
+
+## 视图宽高
+
+`wrap_content`包含全部子内容
+
+`match_parent`沾满父组件的内容
+
+使用`dp`作为尺寸标准
+
+
+
+使用`marign`控制间距
+
+
+
+## 获取父组件信息
+
+类型是`ViewGroup.LayoutParams`
+
+
+
+## 设置边距
+
+```java
+// 设置文本视图的边距
+TextView textView = findViewById(R.id.text_view);
+textView.setMargin(10, 10, 10, 10);
+
+```
 
