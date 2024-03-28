@@ -131,3 +131,15 @@ export struct VideoPlayer {
 }
 ```
 
+
+
+# 弹窗
+
+- 确认类：例如警告弹窗AlertDialog。
+- 选择类：包括文本选择弹窗TextPickerDialog 、日期滑动选择弹窗DatePickerDialog、时间滑动选择弹窗TimePickerDialog等。
+
+
+
+使用`primary button`和`second button`设置按钮
+
+使用`confirm`来设置只能点击**确定**的情况

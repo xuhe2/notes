@@ -1924,6 +1924,18 @@ Outer:
 
 
 
+## for-each loop
+
+```java
+for (element-type e:array){
+    
+}
+```
+
+
+
+
+
 # 方法
 
 modifier: 类似`static`,`public`的修饰符
@@ -1934,7 +1946,77 @@ modifier: 类似`static`,`public`的修饰符
 
 
 
+overloading functon: 不通的参数列表
+
+overriding function: 覆盖之前的函数内容
+
+
+
+* ambiguous invocation is a compile error
+* overloading function唯一区分的是**参数列表**, 参数列表一样但是返回值不同, 是error
+* 匹配度取决于匹配上的参数的个数, 当出现匹配度一样的时候, 是error.(比如可以隐式类型转换的情况
+
+
+
+## 不定长参数
+
+```java
+void func(int... numbers)
+```
+
+* 传入数据的时候, 可以传入`func(1,2,3)`, 也可以使用`func(new int[]{1,2,3})`
+* 这个**不定长内容**, 需要放在**末尾**
+
+
+
+# 数组
+
+```java
+double[] myList = {1,2,3,4};
+```
+
+* 必须写成同一行的简短写法
+
+
+
+## 数组copy
+
+直接使用`=`是使用`引用赋值`
+
+
+
+使用`clone()`方法
+
+```java
+int[] newArray = (int[])p;dArray.clone();
+```
+
+
+
+使用`Array`的静态方法, 使用`copyOf`和`copyOfRange`实现
+
+* 以上的三个方法都不是对`原本的数组修改`, 是直接给一个新的数组
+* 使用`system.arraycopy`可以对原数组修改
+
+
+
+```java
+func(new int[]{1,2,3});
+```
+
+* 传入**匿名的数组**.
+
+
+
+
+
+
+
 ---
+
+
+
+# 代码实战
 
 
 

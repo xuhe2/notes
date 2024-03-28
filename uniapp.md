@@ -106,6 +106,49 @@ npm run dev:h5
 
 
 
+## 子路由tabBar
+
+```
+	"tabBar": {
+		"list": [{
+			"pagePath": "pages/index/index",
+			"text": "home",
+			"iconPath": "/static/icon/home.png",
+			"selectedIconPath": "/static/icon/home_selected.png"
+		}, {
+			"pagePath": "pages/file/file",
+			"text": "file",
+			"iconPath": "/static/icon/file.png",
+			"selectedIconPath": "/static/icon/file_selected.png"
+		}, {
+			"pagePath": "pages/user/user",
+			"text": "user",
+			"iconPath": "/static/icon/user.png",
+			"selectedIconPath": "/static/icon/user_selected.png"
+		}],
+		"color": "#8a8a8a",
+		"selectedColor": "#FFC0CB"
+	}
+```
+
+* 只有被配置在`tabBar`中的`pages`是**有tabBar**的
+
+* 存在`iconPath`和`selectedIconPath`两中`icon`的路径
+
+
+
+## 跳转到tabBar的page
+
+```
+		uni.switchTab({
+			url: '/pages/home/home'
+		})
+```
+
+
+
+
+
 # 信息显示
 
 使用`uni`的API实现相关的功能
@@ -326,3 +369,46 @@ popup.value.open('top'); // 使用.value来访问引用的实例
 
 * 需要手动实现`select`函数
 * 需要使用`tempFilePaths`,文件上传的时候信息才是完整的
+
+
+
+# 使用摄像头
+
+```vue
+<template>
+	<view>
+		<camera style="width: 220px;height: 220px; border-radius: 50%;" device-position="front" flash="off"
+			@error="error"></camera>
+	</view>
+</template>
+
+<script setup>
+	function takePhoto() {
+		const ctx = uni.createCameraContext();
+		ctx.takePhoto({
+			quality: 'high',
+			success: (res) => {
+				console.log(res)
+				src = res.tempImagePath //获取到的画面信息
+			}
+		});
+	}
+
+	function error(e) {
+		console.log(e.detail);
+	}
+</script>
+```
+
+
+
+# 微信小程序运行`v-if`
+
+可以同时使用`""`和`''`保存字符
+
+
+
+# 复杂对象的引用
+
+对于数组使用`ref`
+

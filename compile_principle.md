@@ -408,3 +408,130 @@ $$
 
 
 使用transition检查不同的state是否可以合并, 当不同的state有不同的transition的时候, 明显是不可以合并的
+
+
+
+# parsing
+
+需要执行**syntax analysis**任务
+
+
+
+CFG: content-free grammars
+
+3型文法和2型文法, 2型支持递归
+
+the rules of CFG is recursive
+
+
+
+实现递归使用**parse tree**
+
+
+
+BNF(巴克斯范式) (作为grammar rules):
+
+ `exp->exp op exp|(exp)|number` 
+
+`op->+|-|*`
+
+> number作为终结符, 其他是非终结符
+
+
+
+nonterminal: 
+
+terminal: 使用token组成, 用来terminal derivation
+
+
+
+## 编译过程
+
+tokens经过parser成为syntax tree
+
+* 如果在编译中出现了错误
+
+
+
+token使用写好的关键字, 或者使用`regular expression`表示
+
+meta symbol: `->`,`|`   (只有这两个符号有特殊含义)
+
+
+
+`sentence -> id = exp| if exp sentence`
+
+有2种语句写法
+
+> id是正则式
+
+> 在sentence种嵌套sentence, 实现递归
+
+
+
+## derivation
+
+是a sequence of replacement, 使用grammar rules的右边替换single structure name
+
+不断地替换, 从`begins with a single structure name`到`end with a string of token`
+
+
+
+* language指的是经过**derivation**之后, 得到的所有可以得到地字符串, 使用符号`L(G)`.
+
+
+
+使用grammar rules可以定义一个language
+
+
+
+* 一个grammar可以有多个式子(rules)
+
+只有一个start symbol, 所有的转换从`start symbol`开始
+
+
+
+为什么巴克斯范式可以表示比regular expression多的内容
+
+> 比如`E->(E)|E`, 可以表示出**左边和右边有一样多的括号数的表达式**, 可以count
+
+
+
+* 任何的**左递归/右递归**可以写成正则表达式
+
+
+
+* 不同推导顺序推出的式子一样, 那就是没有二义性的
+
+
+
+## parse tree
+
+可以从`syntax tree`转换为`abstract syntax tree`, 简化树的样子
+
+
+
+1. start symbol作为root node
+2. 中间的节点可以是nonterminal, leaf node is terminal
+
+
+
+推导过程(和构建树的过程一样):
+
+> 选中哪个nonterminal被替换, 被哪个替换 (使用**leftmost derivation**, 从最左边的nonterminal开始) (使用不同的推导顺序, 如果推出的式子一样, 那么是没有二义性的)
+
+
+
+* 转换为`abstract syntax tree`需要减少node
+
+
+
+## precedence and associativity(优先级和相关性)
+
+grammar rules的从上到下的顺序可以表示优先级
+
+`a*(b*c)`和`(a*b)*c`表示的式子结果一样, 但是表达不同
+
+
+
+formal definition of CFG: 上下文无关语法的标准定义

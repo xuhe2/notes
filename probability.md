@@ -168,6 +168,12 @@ M代表match variable
 
 
 
+* 对于所有x, 概率密度非负
+* 全部相加, 概率是1
+* 在一个范围内做积分的结果是这个范围内出现的概率
+
+
+
 ## continuous proability distribution
 
 continuous proability distribution不可以使用离散的方式表达, 并且在单点上的概率可能是0
@@ -182,3 +188,44 @@ continuous proability distribution不可以使用离散的方式表达, 并且�
 P(X=x, Y=y)
 
 * 和一维的一样对待
+
+
+
+# marginal distribution(边缘分布)
+
+对于一个有多个变量的概率函数, 当我们只想考虑**一个变量**的时候
+$$
+p_{x}(x) = \sum_{y}p(x,y)\\
+指的是x单变量的概率密度函数,p(x,y)是双变量的概率密度函数
+$$
+
+> 想知道x的边缘密度函数, 把y**包含全部范围**考虑
+
+
+
+鉴于**multiplicative rules**, 我们得出
+$$
+P(X=x|Y=y) = \frac{p(x,y)}{p_y(y)}
+$$
+
+
+鉴于**两者独立关系**, 得出
+$$
+P(X=x,Y=y) = p(x)p(y)
+$$
+
+
+对于static independent的函数
+
+我们需要检查是否存在
+$$
+p(x,y) = p(x)*p(y)
+$$
+
+* 对于**多个随机变量**都是独立的, `p(x,y,z)=p(x)p(y)p(z)`
+
+
+
+# 数学期望
+
+数学期望, 使用**数值X期望概率**的总和
