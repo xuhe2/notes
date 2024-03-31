@@ -21,6 +21,18 @@ UIAbility启动模式需要在module.json5文件中配置哪个字段？
 launchType
 ```
 
+```
+httpRequest不可以复用
+```
+
+```
+javaScriptAccess设置是否允许执行JavaScript脚本，默认允许执行
+```
+
+
+
+
+
 
 
 # 组件状态管理
@@ -143,3 +155,84 @@ export struct VideoPlayer {
 使用`primary button`和`second button`设置按钮
 
 使用`confirm`来设置只能点击**确定**的情况
+
+
+
+# WEB组件使用
+
+可以使用**本地的文件**/**网络的界面**
+
+* 使用前需要在`model.json5`中配置
+
+```json
+{
+    "module" : {
+        "requestPermissions":[
+           {
+             "name": "ohos.permission.INTERNET"
+           }
+        ]
+    }
+}
+```
+
+
+
+
+
+需要传入一个`contoller`来控制我的界面, 使用`runJavaScript`方法可以实现调用界面中的代码
+
+
+
+# http
+
+导入
+```ts
+import http from '@ohos.net.http';
+```
+
+创建示例
+
+```ts
+let httpRequest = http.createHttp();
+```
+
+代码样例
+
+```ts
+let url = "https://EXAMPLE_URL";
+let promise = httpRequest.request(
+  // 请求url地址
+  url,
+  {
+    // 请求方式
+    method: http.RequestMethod.POST,
+    // 请求的额外数据。
+    extraData: {
+      "param1": "value1",
+      "param2": "value2",
+    },
+    // 可选，默认为60s
+    connectTimeout: 60000,
+    // 可选，默认为60s
+    readTimeout: 60000,
+    // 开发者根据自身业务需要添加header字段
+    header: {
+      'Content-Type': 'application/json'
+    }
+  });
+```
+
+处理返回信息
+
+```ts
+promise.then((data) => { 
+  if (data.responseCode === http.ResponseCode.OK) {
+    console.info('Result:' + data.result);
+    console.info('code:' + data.responseCode);
+  }
+}).catch((err) => {
+  console.info('error:' + JSON.stringify(err));
+});
+```
+

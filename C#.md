@@ -482,3 +482,151 @@ person.name;
 
 
 * 也是一种值类型
+
+
+
+# class
+
+internal class(默认): 同一个程序集中就可以访问, 是同一个项目.
+
+
+
+## data
+
+instance fields,cont,inner class,static fields,readonly
+
+
+
+* 存在内部类
+* 只有构造函数可以设置readonly的变量
+* 可以通过设置setter但是不设置getter, 让一个变量成为readonly
+
+## method
+
+包含instance method,static method,constructor,destructor,property,overloaded operation,index
+
+
+
+* 默认是`private`.
+
+* 使用析构函数会造成垃圾回收的延后, 所以, 如果需要手动的清除, 设置一个`Dispose`函数
+
+> 在使用的时候, 使用`using(var a = new var()){}`的语法糖
+>
+> 或者显式的调用`Dispose`函数
+
+
+
+### 构造函数
+
+
+
+构造方法之间的调用
+
+```c#
+public class_name(): this(1){
+    
+}
+
+public class_name(int number){
+    //
+}
+```
+
+
+
+调用的时候可以使用`{}`来初始化
+
+```c#
+class_name a = new class_name{
+    var1 = 1;
+}
+```
+
+
+
+* 当执行派生类的构造函数的时候, 会自动调用基类的无参构造函数.
+
+
+
+### getter/setter
+
+```c#
+public int x{
+    set{
+        
+    }
+    private get{
+        
+    }
+}
+```
+
+
+
+## 继承
+
+字段和属性都是可以继承的
+
+* 构造函数不可继承, 有static属性的.
+
+
+
+## override
+
+存在`override`关键字
+
+```c#
+public override func(){}
+```
+
+
+
+## virtual
+
+虚函数
+
+
+
+* 需要`virtual`和`override`配合使用, 才有多态的效果. 如果不使用, 那么是hide效果
+
+* 可以给`property`使用
+
+
+
+## abstract
+
+有抽象方法就是抽象类
+
+抽象类无法被继承
+
+* 抽象方法只有申明, 没有实现, 但是虚方法可以有实现
+
+
+
+## sealed
+
+被继承了也不可以被重写的方法
+
+* sealed是对下的, override是对上的, 所以2者可以共存
+* `sealed`和`abstract`/`virtual`不可以共存
+
+
+
+## 不可变类
+
+注意, 行为是不可修改的
+
+> 字段: private(不可以是protected)
+>
+> 属性: 没有set
+>
+> 方法: 不可以set, 返回一个new的新对象
+>
+> 给类添加sealed, 不可以被继承可以防止子类修改行为
+
+
+
+## 调用基类的方法
+
+使用`base`调用基类的操作, 比如`base()`无参构造函数, `base.func()`基类方法

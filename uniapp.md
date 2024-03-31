@@ -412,3 +412,72 @@ popup.value.open('top'); // 使用.value来访问引用的实例
 
 对于数组使用`ref`
 
+
+
+# 跨界面传输数据
+
+使用`uni`的API
+
+
+
+发送数据的
+
+```
+		uni.navigateTo({
+			url: "/pages/orderManagement/orderManagement",
+			success: (res) => {
+				uni.$emit("update", {
+					tag: "all"
+				})
+			}
+		})
+```
+
+
+
+接受数据的
+
+```
+	uni.$on('update', (data) => {
+		console.log('监听到事件来自 update ，携带参数 tag 为：' + data.tag);
+	})
+```
+
+
+
+* 使用`setIntervale`避免丢失
+
+```
+	function goToLogin(type) {
+		let counter = 0
+		const interval = setInterval(() => {
+			counter++
+			if (counter > 3) {
+				clearInterval(interval)
+			}
+			uni.$emit("type", {
+				"type": type
+			})
+		}, 1000)
+		uni.navigateTo({
+			url: '/pages/login/login',
+		})
+	}
+```
+
+
+
+
+
+# Props使用默认值
+
+```vue
+const props = defineProps({
+	tags: Array,
+	contents: Array,
+	initIndex: {
+		type: Number,
+		default: 0
+	}
+})
+```
