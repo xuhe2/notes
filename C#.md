@@ -630,3 +630,137 @@ public override func(){}
 ## 调用基类的方法
 
 使用`base`调用基类的操作, 比如`base()`无参构造函数, `base.func()`基类方法
+
+
+
+# object类
+
+使用`Object`的`GetType`方法
+
+```c#
+var.GetType() == typeof(class_name);
+```
+
+也可以写成
+
+```c#
+(var is class_name)
+```
+
+
+
+类型转换, 直接使用强制的类型转换写作`class_name var = (class_name)old_var`
+
+或者使用`var = old_var as class_name`, 如果转换失败, 返回null
+
+
+
+深度赋值实现
+
+* C#中的赋值, 对于复杂对象是赋值引用
+
+
+
+`Equals`方法默认是比较地址, 看2个实例是不是同一个.
+
+
+
+# interface类
+
+不可以存在变量, 但是可以存在属性和函数
+
+* 默认public, 不可以使用private, 但是可以使用`protected`和`internal`和`static(需要实现)`.
+
+> protected是给子类用的
+
+* 接口类的函数可以被实现, 当添加接口类的功能的时候, 直接在接口类的函数中实现它, 可以保证不需要大量重写实现类的代码
+
+
+
+* 可以多继承
+
+
+
+## 显式实现和隐式实现
+
+```c#
+    double IShape.GetArea() // 显式实现 GetArea() 方法
+    {
+        return Width * Height;
+    }
+
+    double IShape.GetPerimeter() // 显式实现 GetPerimeter() 方法
+    {
+        return 2 * (Width + Height);
+    }
+```
+
+* 显式的继承会使得只能使用接口类来调用这个功能, 无法使用子类直接调用
+
+
+
+## equals方法
+
+默认比较地址, 如果是值类型, 那么比较内容
+
+不适用泛型的时候, 接受的参数是`object`, 需要手动转换类型
+
+* 比较的时候, 只在乎返回值的正负, 不会在意绝对值的大小
+
+如果使用泛型的Comparable实现, 接受的值的类型是确定的
+
+
+
+## sort方法
+
+使用`CompareTo`来自`IComparable`继承的
+
+使用`Compator`的实现
+
+使用**重写之后的运算符**, 大于号和小于号需要成对的重写, 但是加号减号不是
+
+> 重写的运算符需要是`public`和`static`.
+
+
+
+# ArrayList
+
+**没有指定类型的数组**可以存储任何类型的数据, 但是存到内部的内容是object, 所以, 使用的时候需要unboxing
+
+> 放入数据的时候: 先把数据转换为引用类型, 然后放入
+
+**指定类型的数组**可以直接使用.
+
+
+
+# Delegate代理
+
+```c#
+delegate int MyDelegate(string message);
+
+static int PrintMessage(string message)
+{
+    Console.WriteLine(message);
+    return message.Length;
+}
+
+MyDelegate myDelegate = PrintMessage;
+```
+
+同一系列返回值和传入参数的函数作为一个系列, 可以把实例当成一个函数来使用
+
+* 可以使用匿名函数赋值
+
+```c#
+int add(int x, int y) => x+y;
+```
+
+
+
+
+
+可以使用`+`来多个方式调用, 返回值是不稳定的.
+
+
+
+本质调用delegate的实现: 使用`invoke`方法实现, 调用`delegate_name.invoke`

@@ -1976,6 +1976,7 @@ double[] myList = {1,2,3,4};
 ```
 
 * 必须写成同一行的简短写法
+* 默认初始化的值是0
 
 
 
@@ -2008,7 +2009,80 @@ func(new int[]{1,2,3});
 
 
 
+## 数组类的使用
 
+使用`java.util.Arrays.sort`排序内容
+
+使用`java.util.Arrays.equals(arr1,arr2)`比较是否相同
+
+使用`java.util.Arrays.fill`方法实现填充
+
+使用`java.util.Arrays.toString`方法把一个数组转换为字符串表示
+
+
+
+## 查询数组的长度
+
+`matrix.length`获得的是行数
+
+`matrix[0].length`获取的是第一行的列数
+
+
+
+* 行数不设置是不可以的
+
+
+
+# Main方法的使用
+
+可以直接调用别的类的main方法使用
+
+* 传入String[]作为参数
+
+
+
+# class
+
+由data fields,constructor,methods组成
+
+
+
+> default constructor 默认构造函数, 无参, 默认存在
+>
+> overload constructor 默认不存在
+>
+> * 如果显式定义了构造方法, 默认构造方法不会自动生成.
+
+
+
+* 一个java文件**至多**有一个public的类, 并且**需要和文件名一致**.
+* 每个class在编译的时候, 会对应一个.class文件.
+* overload construcot 有different signture
+* 实例访问static的时候, 可以实现, 不强制使用class_name访问
+
+
+
+* local variable 没有默认值, 但是类的属性在初始化的时候, 具有默认值.
+
+
+
+## 匿名类对象
+
+```java
+printLine(new class_name().func());
+```
+
+
+
+
+
+## UML
+
+`+`代表public
+
+`-`代表private
+
+没有代表`default`, 同一个包可以访问
 
 
 

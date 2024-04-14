@@ -535,3 +535,74 @@ grammar rules的从上到下的顺序可以表示优先级
 
 
 formal definition of CFG: 上下文无关语法的标准定义
+
+
+
+# top-down parser
+
+使用前序遍历的树的结构进行parse, 从root到leaf.
+
+
+
+predict parser: 预测的时候, 每次构造树的新的内容的时候, 需要去检查one or more look-ahead tokens(输入内容的开头的token的内容)
+
+backtracking parser: 递归回溯的方法.
+
+
+
+recursive-descent parsing: 递归下降
+
+LL(1): 表示process input from left to right, leftmost, 1 look-ahead token.
+
+
+
+对于parsing stack,input中需要加入`$`符号, 作为结束符号
+
+如果堆栈顶部的符号和input中开头的符号相同, 那就是match, 放入缓冲区, 当stack和input都空了之后, 那就是accept
+
+
+
+parsing table: 行是input的每个token, 包括结束符号`$`.
+
+> N是以non-terminal作为二维表的表头, T是terminal(包括`$`, 但是不包含**空符号**)作为列的列名, 表的内容是grammar rule
+
+grammar rule作为元素放入哪个cell, 取决于经过若干次之后, 开头的字符会是哪个terminal符号
+
+对于有**空符号**出现的位置, 从`S$`的位置开始推导, 在最后式子的中的**当前nonterminal**之后的terminal符号就是你要放入的地方
+
+* 可能出现conflict, 当一个cell中出现多个operation的时候, 就是出现冲突.
+
+# 实验
+```lex
+%{
+    typedef struct {
+        int count;
+        char value[256];
+    }characterArray;
+
+    characterArray arr = {0};
+%}
+
+char [a-z]|[A-Z]
+
+%%
+
+{char} {
+    arr.value[arr.count] = yytext[0];
+    arr.count++;
+}
+
+%%
+
+int main() {
+    yylex();    
+    for (int i=0; i<arr.count; i++) {
+        printf("%c: %d\n", arr.value[i], i);
+    }
+    return 0;
+}
+```
+使用`%{ %}`来包含开头的C语言插入代码
+可以给正则表达式取名字
+使用`%% %%`包含碰到对于的token时候执行的C语言代码
+最后是需要执行的C语言代码

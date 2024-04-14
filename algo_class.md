@@ -1039,3 +1039,37 @@ merge sort : 需要O(N)的空间  需要合并logN次
 > 比较次数: (n-1)*(n)/2
 >
 > 移动次数可以小于比较次数.
+
+
+
+# 算法设计课
+
+最大公共序列:
+
+```python
+def longestCommonSubsequence(str1, str2) -> int:
+    def dp(i, j):
+        # 空串的 base case
+        if i == -1 or j == -1:
+            return 0
+        if str1[i] == str2[j]:
+            # 这边找到一个 lcs 的元素，继续往前找
+            return dp(i - 1, j - 1) + 1
+        else:
+            # 谁能让 lcs 最长，就听谁的
+            return max(dp(i-1, j), dp(i, j-1))
+        
+    # i 和 j 初始化为最后一个索引
+    return dp(len(str1)-1, len(str2)-1)
+
+```
+
+
+
+## 矩阵连乘
+
+
+
+多个矩阵连乘的时候, 不同的相乘的顺序决定计算的时间
+
+![img](https://pic1.zhimg.com/80/v2-a8c6ab2aabe2cf2f9868cf5164c0b494_720w.webp)

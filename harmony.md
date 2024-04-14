@@ -26,12 +26,18 @@ httpRequest不可以复用
 ```
 
 ```
-javaScriptAccess设置是否允许执行JavaScript脚本，默认允许执行
+javaScriptAccess设置是否允许执行JavaScript脚本，默认不允许执行
 ```
 
+```
+应用中涉及到Student信息，如包含姓名，性别，年龄，身高等信息不可以用首选项来存储
+```
 
+```
+同一应用或进程中每个文件仅存在一个Preferences实例
+```
 
-
+首选项不保证准寻ACID
 
 
 
@@ -235,4 +241,8 @@ promise.then((data) => {
   console.info('error:' + JSON.stringify(err));
 });
 ```
+
+
+
+# 数据持久化
 
